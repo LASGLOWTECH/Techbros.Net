@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bookmark, Loader2 } from "lucide-react";
+import { Search, Bookmark, Loader2, Settings } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { TalentCard } from "@/components/talent/TalentCard";
 import { useAuth } from "@/hooks/useAuth";
@@ -73,7 +73,7 @@ export default function ClientDashboard() {
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Quick Actions */}
-        <div className="grid sm:grid-cols-2 gap-4 mb-8">
+        <div className="grid sm:grid-cols-3 gap-4 mb-8">
           <Link to="/explore" className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
             <Search className="h-6 w-6 text-primary mb-3" />
             <h3 className="font-semibold mb-1">Explore Talents</h3>
@@ -84,6 +84,11 @@ export default function ClientDashboard() {
             <h3 className="font-semibold mb-1">Saved Talents</h3>
             <p className="text-sm text-muted-foreground">{bookmarkedTalents.length} bookmarked</p>
           </div>
+          <Link to="/client/settings" className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+            <Settings className="h-6 w-6 text-primary mb-3" />
+            <h3 className="font-semibold mb-1">Settings</h3>
+            <p className="text-sm text-muted-foreground">Manage your account</p>
+          </Link>
         </div>
 
         {/* Bookmarked Talents */}

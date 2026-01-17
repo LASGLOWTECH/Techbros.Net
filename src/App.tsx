@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import EditProfile from "@/pages/freelancer/EditProfile";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -28,8 +29,9 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/talent/:userId" element={<TalentProfile />} />
-            <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />
-            <Route path="/client/dashboard" element={<ClientDashboard />} />
+            <Route path="/freelancer" element={<FreelancerDashboard />} />
+            <Route path="/freelancer/profile" element={<EditProfile />} />
+            <Route path="/client" element={<ClientDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

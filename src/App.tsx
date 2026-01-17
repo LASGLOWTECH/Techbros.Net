@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import EditProfile from "@/pages/freelancer/EditProfile";
+import ClientSettings from "@/pages/client/Settings";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/freelancer" element={<FreelancerDashboard />} />
             <Route path="/freelancer/profile" element={<EditProfile />} />
             <Route path="/client" element={<ClientDashboard />} />
+            <Route path="/client/settings" element={<ClientSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

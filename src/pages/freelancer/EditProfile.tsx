@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Upload, X, Plus, ArrowLeft } from "lucide-react";
+import { Loader2, Upload, X, Plus, ArrowLeft, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -50,6 +51,9 @@ export default function EditProfile() {
   const [skillInput, setSkillInput] = useState("");
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [fullName, setFullName] = useState("");
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -71,23 +75,36 @@ export default function EditProfile() {
   }, [user, authLoading]);
 
   const fetchProfile = async () => {
-    const { data, error } = await supabase
-      .from("freelancer_profiles")
-      .select("*")
-      .eq("user_id", user!.id)
-      .maybeSingle();
+    const [freelancerRes, profileRes] = await Promise.all([
+      supabase
+        .from("freelancer_profiles")
+        .select("*")
+        .eq("user_id", user!.id)
+        .maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user!.id)
+        .maybeSingle(),
+    ]);
 
-    if (data) {
+    if (freelancerRes.data) {
       form.reset({
-        role_title: data.role_title || "",
-        bio: data.bio || "",
-        location: data.location || "",
-        availability: (data.availability as AvailabilityStatus) || "available",
-        project_link: data.project_link || "",
+        role_title: freelancerRes.data.role_title || "",
+        bio: freelancerRes.data.bio || "",
+        location: freelancerRes.data.location || "",
+        availability: (freelancerRes.data.availability as AvailabilityStatus) || "available",
+        project_link: freelancerRes.data.project_link || "",
       });
-      setSkills(data.skills || []);
-      setPortfolioImages(data.portfolio_images || []);
+      setSkills(freelancerRes.data.skills || []);
+      setPortfolioImages(freelancerRes.data.portfolio_images || []);
     }
+
+    if (profileRes.data) {
+      setAvatarUrl(profileRes.data.avatar_url);
+      setFullName(profileRes.data.full_name || "");
+    }
+
     setLoading(false);
   };
 
@@ -101,6 +118,85 @@ export default function EditProfile() {
 
   const handleRemoveSkill = (skill: string) => {
     setSkills(skills.filter((s) => s !== skill));
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Avatar image must be less than 2MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingAvatar(true);
+
+    // Delete old avatar if exists
+    if (avatarUrl) {
+      const oldPath = avatarUrl.split("/portfolios/")[1];
+      if (oldPath) {
+        await supabase.storage.from("portfolios").remove([oldPath]);
+      }
+    }
+
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user!.id}/avatar-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("portfolios")
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast({
+        title: "Upload failed",
+        description: uploadError.message,
+        variant: "destructive",
+      });
+      setUploadingAvatar(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("portfolios")
+      .getPublicUrl(fileName);
+
+    const newAvatarUrl = urlData.publicUrl;
+
+    // Update profile with new avatar URL
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: newAvatarUrl, updated_at: new Date().toISOString() })
+      .eq("user_id", user!.id);
+
+    if (updateError) {
+      toast({
+        title: "Failed to save avatar",
+        description: updateError.message,
+        variant: "destructive",
+      });
+    } else {
+      setAvatarUrl(newAvatarUrl);
+      toast({
+        title: "Avatar updated",
+        description: "Your profile photo has been updated.",
+      });
+    }
+
+    setUploadingAvatar(false);
+    e.target.value = "";
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,6 +325,40 @@ export default function EditProfile() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Avatar Upload */}
+            <div className="space-y-3">
+              <Label>Profile Photo</Label>
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <Avatar className="h-24 w-24 border-2">
+                    <AvatarImage src={avatarUrl || undefined} />
+                    <AvatarFallback className="gradient-hero text-primary-foreground text-2xl">
+                      {fullName?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) || "TB"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <label className="absolute bottom-0 right-0 p-2 rounded-full bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 transition-colors shadow-md">
+                    {uploadingAvatar ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Camera className="h-4 w-4" />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                      disabled={uploadingAvatar}
+                    />
+                  </label>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">
+                    Upload a professional photo. Max 2MB, JPG or PNG recommended.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Role Title */}
             <FormField
               control={form.control}

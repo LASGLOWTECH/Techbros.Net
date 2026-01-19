@@ -2,42 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TechBros Network Design System - Lasglowtech Inspired */
+/* Lasglowtech Dark Tech Design System */
 
 @layer base {
   :root {
-    /* Core brand colors */
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    /* Core Lasglowtech Dark Theme - Applied as default */
+    /* Background: Dark gradient from #0f172a to #111c37 */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Cards: #162033 */
+    --card: 220 41% 14%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 220 41% 14%;
+    --popover-foreground: 0 0% 100%;
 
-    /* Primary - Deep Tech Blue */
-    --primary: 217 91% 60%;
+    /* Primary - Tech Blue #2563eb */
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Soft Gray Blue */
-    --secondary: 214 32% 91%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary - Slightly lighter than card */
+    --secondary: 220 41% 18%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Muted */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Muted - For subtle elements */
+    --muted: 220 41% 18%;
+    --muted-foreground: 0 0% 70%;
 
-    /* Accent - Vibrant Coral Orange */
-    --accent: 24 95% 53%;
+    /* Accent - Keep blue for consistency */
+    --accent: 217 91% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    /* Borders - Subtle white at low opacity */
+    --border: 220 30% 22%;
+    --input: 220 41% 18%;
+    --ring: 217 91% 53%;
 
     --radius: 0.75rem;
 
@@ -48,59 +51,62 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(239 84% 67%) 50%, hsl(280 87% 65%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(16 100% 60%) 100%);
-    --gradient-dark: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(217 33% 17%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+    /* Lasglowtech Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(220 50% 15%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(217 91% 53%) 0%, hsl(217 91% 63%) 100%);
+    --gradient-dark: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(220 50% 13%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220 41% 16%) 0%, hsl(220 41% 12%) 100%);
+    --gradient-page: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(220 50% 13%) 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
-    --shadow-glow: 0 0 40px -10px hsl(217 91% 60% / 0.4);
-    --shadow-accent: 0 8px 30px -8px hsl(24 95% 53% / 0.4);
+    /* Shadows - Glow effects for dark theme */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.4), 0 8px 10px -6px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 53% / 0.5);
+    --shadow-accent: 0 8px 30px -8px hsl(217 91% 53% / 0.4);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5% 26%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 217 91% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 220 41% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 30% 22%;
+    --sidebar-ring: 217 91% 53%;
   }
 
+  /* Dark mode uses the same theme for consistency */
   .dark {
-    --background: 222 47% 5%;
-    --foreground: 210 40% 98%;
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
 
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 41% 14%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 41% 14%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 91% 60%;
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 41% 18%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 41% 18%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 24 95% 53%;
+    --accent: 217 91% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    --border: 220 30% 22%;
+    --input: 220 41% 18%;
+    --ring: 217 91% 53%;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -108,17 +114,18 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 50%) 0%, hsl(239 84% 57%) 50%, hsl(280 87% 55%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 5%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(220 50% 15%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220 41% 16%) 0%, hsl(220 41% 12%) 100%);
+    --gradient-page: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(220 50% 13%) 100%);
 
     --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 217 91% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 220 41% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 30% 22%;
+    --sidebar-ring: 217 91% 53%;
   }
 }
 
@@ -138,6 +145,12 @@
 }
 
 @layer components {
+  /* Page background gradient */
+  .gradient-page {
+    background: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(220 50% 13%) 100%);
+    min-height: 100vh;
+  }
+
   .gradient-hero {
     background: var(--gradient-hero);
   }
@@ -162,19 +175,38 @@
     box-shadow: var(--shadow-accent);
   }
 
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
   .text-gradient {
-    background: var(--gradient-hero);
+    background: linear-gradient(135deg, hsl(217 91% 53%) 0%, hsl(217 91% 70%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .glass {
-    @apply backdrop-blur-xl bg-background/80 border border-border/50;
+    @apply backdrop-blur-xl border;
+    background: hsl(220 41% 14% / 0.8);
+    border-color: hsl(0 0% 100% / 0.1);
+  }
+
+  /* Card styling with Lasglowtech dark theme */
+  .lasglowtech-card {
+    background: hsl(220 41% 14%);
+    border: 1px solid hsl(0 0% 100% / 0.1);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
   }
 
   .card-hover {
     @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 10px 30px -10px hsl(217 91% 53% / 0.3);
+    border-color: hsl(217 91% 53% / 0.3);
   }
 
   .btn-glow {
@@ -184,11 +216,21 @@
   .btn-glow::after {
     content: '';
     @apply absolute inset-0 opacity-0 transition-opacity duration-300;
-    background: radial-gradient(circle at center, hsl(var(--primary) / 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle at center, hsl(217 91% 53% / 0.3) 0%, transparent 70%);
   }
 
   .btn-glow:hover::after {
     @apply opacity-100;
+  }
+
+  /* Input focus styling */
+  .input-lasglowtech {
+    @apply bg-secondary border-border text-foreground;
+  }
+
+  .input-lasglowtech:focus {
+    border-color: hsl(217 91% 53%);
+    box-shadow: 0 0 0 2px hsl(217 91% 53% / 0.2);
   }
 }
 
@@ -207,6 +249,27 @@
 
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
+  }
+
+  /* Text opacity utilities for the dark theme */
+  .text-white-90 {
+    color: hsl(0 0% 100% / 0.9);
+  }
+
+  .text-white-70 {
+    color: hsl(0 0% 100% / 0.7);
+  }
+
+  .text-white-50 {
+    color: hsl(0 0% 100% / 0.5);
+  }
+
+  .border-white-10 {
+    border-color: hsl(0 0% 100% / 0.1);
+  }
+
+  .border-white-20 {
+    border-color: hsl(0 0% 100% / 0.2);
   }
 
   @keyframes float {

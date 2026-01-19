@@ -59,7 +59,7 @@ export default function FreelancerDashboard() {
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Profile Overview */}
-        <div className="bg-card rounded-2xl border p-6 mb-6">
+        <div className="rounded-2xl border border-white/10 p-6 mb-6 shadow-card" style={{ background: 'hsl(220 41% 14%)' }}>
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="h-16 w-16 border-2">
               <AvatarImage src={profile?.avatar_url} />
@@ -90,15 +90,15 @@ export default function FreelancerDashboard() {
 
         {/* Quick Actions */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <Link to="/freelancer/profile" className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+          <Link to="/freelancer/profile" className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
             <Edit className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Edit Profile</h3>
-            <p className="text-sm text-muted-foreground">Update your info and skills</p>
+            <h3 className="font-semibold mb-1 text-white">Edit Profile</h3>
+            <p className="text-sm text-white/70">Update your info and skills</p>
           </Link>
-          <Link to={`/talent/${user?.id}`} className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+          <Link to={`/talent/${user?.id}`} className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
             <Eye className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Preview Profile</h3>
-            <p className="text-sm text-muted-foreground">See how clients view you</p>
+            <h3 className="font-semibold mb-1 text-white">Preview Profile</h3>
+            <p className="text-sm text-white/70">See how clients view you</p>
           </Link>
         </div>
       </div>

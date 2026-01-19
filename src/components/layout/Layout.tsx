@@ -12,7 +12,7 @@ export function Layout({ children, showMobileNav = true }: LayoutProps) {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen gradient-page">
       <Navbar />
       <main className={`pt-16 ${user && showMobileNav ? "pb-20 md:pb-0" : ""}`}>
         {children}

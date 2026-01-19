@@ -51,7 +51,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex gradient-page">
       {/* Left Panel - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8 animate-slide-up">
@@ -139,8 +139,8 @@ export default function Login() {
       </div>
 
       {/* Right Panel - Visual */}
-      <div className="hidden lg:flex flex-1 gradient-hero items-center justify-center p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent/20 via-transparent to-transparent" />
+      <div className="hidden lg:flex flex-1 items-center justify-center p-12 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(217 91% 53%) 0%, hsl(220 80% 40%) 100%)' }}>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent" />
         <div className="relative z-10 text-center text-primary-foreground">
           <h2 className="text-4xl font-bold mb-4">Connect with Tech Talent</h2>
           <p className="text-lg text-primary-foreground/80 max-w-md">

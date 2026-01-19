@@ -40,14 +40,13 @@ export default function Landing() {
   return (
     <Layout showMobileNav={false}>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 gradient-hero opacity-95" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(217 91% 53%) 0%, hsl(220 80% 40%) 100%)' }}>
+        {/* Background overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent" />
         
         {/* Animated shapes */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow delay-1000" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow delay-1000" />
 
         <div className="container relative z-10 px-4 py-20 text-center">
           <div className="animate-slide-up">
@@ -101,7 +100,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-background">
+      <section className="py-24" style={{ background: 'linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(220 50% 11%) 100%)' }}>
         <div className="container px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -116,9 +115,10 @@ export default function Landing() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="group p-6 rounded-2xl border bg-card card-hover"
+                className="group p-6 rounded-2xl border border-white/10 card-hover"
+                style={{ background: 'hsl(220 41% 14%)' }}
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl gradient-hero shadow-glow mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-glow mb-4">
                   <feature.icon className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -134,8 +134,8 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 gradient-dark relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent" />
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(220 50% 10%) 100%)' }}>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-primary/40 via-transparent to-transparent" />
         
         <div className="container relative z-10 px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
@@ -160,14 +160,14 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t">
+      <footer className="py-12 border-t border-white/10" style={{ background: 'hsl(222 47% 6%)' }}>
         <div className="container px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-hero">
-                <Zap className="h-4 w-4 text-primary-foreground" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                <Zap className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold text-foreground">TechBros Network</span>
+              <span className="font-bold text-white">TechBros Network</span>
             </div>
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} TechBros Network. All rights reserved.

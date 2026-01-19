@@ -203,7 +203,7 @@ export default function TalentProfile() {
         </Link>
 
         {/* Profile Header */}
-        <div className="bg-card rounded-2xl border shadow-sm p-6 sm:p-8 mb-6 animate-slide-up">
+        <div className="rounded-2xl border border-white/10 shadow-card p-6 sm:p-8 mb-6 animate-slide-up" style={{ background: 'hsl(220 41% 14%)' }}>
           <div className="flex flex-col sm:flex-row items-start gap-6">
             <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
               <AvatarImage src={talent.avatar_url || undefined} alt={talent.full_name} />
@@ -284,7 +284,7 @@ export default function TalentProfile() {
 
         {/* Bio */}
         {talent.bio && (
-          <div className="bg-card rounded-2xl border shadow-sm p-6 sm:p-8 mb-6">
+          <div className="rounded-2xl border border-white/10 shadow-card p-6 sm:p-8 mb-6" style={{ background: 'hsl(220 41% 14%)' }}>
             <h2 className="text-lg font-semibold mb-3">About</h2>
             <p className="text-muted-foreground whitespace-pre-wrap">{talent.bio}</p>
           </div>
@@ -292,7 +292,7 @@ export default function TalentProfile() {
 
         {/* Skills */}
         {talent.skills && talent.skills.length > 0 && (
-          <div className="bg-card rounded-2xl border shadow-sm p-6 sm:p-8 mb-6">
+          <div className="rounded-2xl border border-white/10 shadow-card p-6 sm:p-8 mb-6" style={{ background: 'hsl(220 41% 14%)' }}>
             <h2 className="text-lg font-semibold mb-3">Skills</h2>
             <div className="flex flex-wrap gap-2">
               {talent.skills.map((skill) => (
@@ -306,7 +306,7 @@ export default function TalentProfile() {
 
         {/* Portfolio */}
         {talent.portfolio_images && talent.portfolio_images.length > 0 && (
-          <div className="bg-card rounded-2xl border shadow-sm p-6 sm:p-8">
+          <div className="rounded-2xl border border-white/10 shadow-card p-6 sm:p-8" style={{ background: 'hsl(220 41% 14%)' }}>
             <h2 className="text-lg font-semibold mb-4">Portfolio</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {talent.portfolio_images.map((image, index) => (

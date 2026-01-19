@@ -34,7 +34,7 @@ export function TalentCard({ talent, isBookmarked, onBookmark, showBookmark }: T
     .slice(0, 2);
 
   return (
-    <div className="group relative bg-card rounded-xl border shadow-sm card-hover overflow-hidden">
+    <div className="group relative rounded-xl border border-white/10 shadow-card card-hover overflow-hidden" style={{ background: 'hsl(220 41% 14%)' }}>
       {/* Portfolio Preview */}
       {talent.portfolio_images && talent.portfolio_images.length > 0 && (
         <div className="aspect-video bg-muted overflow-hidden">

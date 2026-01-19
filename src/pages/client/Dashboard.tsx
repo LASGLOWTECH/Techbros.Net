@@ -74,31 +74,31 @@ export default function ClientDashboard() {
 
         {/* Quick Actions */}
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
-          <Link to="/explore" className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+          <Link to="/explore" className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
             <Search className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Explore Talents</h3>
-            <p className="text-sm text-muted-foreground">Find skilled professionals</p>
+            <h3 className="font-semibold mb-1 text-white">Explore Talents</h3>
+            <p className="text-sm text-white/70">Find skilled professionals</p>
           </Link>
-          <div className="bg-card rounded-xl border p-5">
+          <div className="rounded-xl border border-white/10 p-5" style={{ background: 'hsl(220 41% 14%)' }}>
             <Bookmark className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Saved Talents</h3>
-            <p className="text-sm text-muted-foreground">{bookmarkedTalents.length} bookmarked</p>
+            <h3 className="font-semibold mb-1 text-white">Saved Talents</h3>
+            <p className="text-sm text-white/70">{bookmarkedTalents.length} bookmarked</p>
           </div>
-          <Link to="/client/settings" className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+          <Link to="/client/settings" className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
             <Settings className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Settings</h3>
-            <p className="text-sm text-muted-foreground">Manage your account</p>
+            <h3 className="font-semibold mb-1 text-white">Settings</h3>
+            <p className="text-sm text-white/70">Manage your account</p>
           </Link>
         </div>
 
         {/* Bookmarked Talents */}
         <h2 className="text-xl font-semibold mb-4">Saved Talents</h2>
         {bookmarkedTalents.length === 0 ? (
-          <div className="text-center py-12 bg-card rounded-xl border">
-            <Bookmark className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-semibold mb-2">No saved talents yet</h3>
-            <p className="text-muted-foreground mb-4">Explore and bookmark talents you're interested in</p>
-            <Link to="/explore"><button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-medium">Explore Talents</button></Link>
+          <div className="text-center py-12 rounded-xl border border-white/10" style={{ background: 'hsl(220 41% 14%)' }}>
+            <Bookmark className="h-12 w-12 text-white/50 mx-auto mb-4" />
+            <h3 className="font-semibold mb-2 text-white">No saved talents yet</h3>
+            <p className="text-white/70 mb-4">Explore and bookmark talents you're interested in</p>
+            <Link to="/explore"><button className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">Explore Talents</button></Link>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

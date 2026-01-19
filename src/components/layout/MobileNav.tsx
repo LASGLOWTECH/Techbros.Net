@@ -29,7 +29,7 @@ export function MobileNav() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass border-t">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-white/10 backdrop-blur-xl" style={{ background: 'hsl(222 47% 6% / 0.95)' }}>
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map(({ icon: Icon, label, path }) => (
           <Link
@@ -39,7 +39,7 @@ export function MobileNav() {
               "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors",
               isActive(path)
                 ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-white/60 hover:text-white"
             )}
           >
             <Icon className="h-5 w-5" />

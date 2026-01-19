@@ -217,7 +217,7 @@ export default function Explore() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="p-4 rounded-xl border bg-card animate-slide-up">
+            <div className="p-4 rounded-xl border border-white/10 animate-slide-up" style={{ background: 'hsl(220 41% 14%)' }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold">Filters</h3>
                 {hasActiveFilters && (

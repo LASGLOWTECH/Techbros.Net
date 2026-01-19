@@ -37,12 +37,16 @@ export default function TalentProfile() {
   const [talent, setTalent] = useState<FreelancerWithProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  const [profileNotComplete, setProfileNotComplete] = useState(false);
 
   const { user, userRole } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
     if (userId) {
+      // Check if current user is the profile owner
+      setIsOwner(user?.id === userId);
       fetchTalent();
       if (user) checkBookmark();
     }
@@ -68,10 +72,20 @@ export default function TalentProfile() {
         )
       `)
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
 
-    if (error || !data) {
+    if (error) {
       console.error("Error fetching talent:", error);
+      setLoading(false);
+      return;
+    }
+
+    // No freelancer profile exists yet
+    if (!data) {
+      // Check if this is the owner viewing their own profile
+      if (user?.id === userId) {
+        setProfileNotComplete(true);
+      }
       setLoading(false);
       return;
     }
@@ -165,6 +179,27 @@ export default function TalentProfile() {
   }
 
   if (!talent) {
+    // Owner hasn't completed their profile yet
+    if (profileNotComplete && isOwner) {
+      return (
+        <Layout>
+          <div className="container px-4 py-16 text-center">
+            <h1 className="text-2xl font-bold mb-4">Your profile is not yet complete</h1>
+            <p className="text-muted-foreground mb-6">
+              Please save your profile before previewing. Add your role title, bio, and skills to get started.
+            </p>
+            <Link to="/freelancer/profile">
+              <Button>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Complete Your Profile
+              </Button>
+            </Link>
+          </div>
+        </Layout>
+      );
+    }
+
+    // Profile truly doesn't exist for other users
     return (
       <Layout>
         <div className="container px-4 py-16 text-center">

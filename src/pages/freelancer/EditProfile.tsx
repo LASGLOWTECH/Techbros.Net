@@ -274,6 +274,7 @@ export default function EditProfile() {
         project_link: data.project_link || null,
         skills,
         portfolio_images: portfolioImages,
+        is_public: true,
         updated_at: new Date().toISOString(),
       }, {
         onConflict: "user_id",

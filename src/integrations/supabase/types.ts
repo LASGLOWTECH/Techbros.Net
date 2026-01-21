@@ -35,6 +35,39 @@ export type Database = {
         }
         Relationships: []
       }
+      client_profiles: {
+        Row: {
+          about: string | null
+          company_name: string | null
+          cover_image_url: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          about?: string | null
+          company_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          about?: string | null
+          company_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       freelancer_profiles: {
         Row: {
           availability:
@@ -85,6 +118,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      jobs: {
+        Row: {
+          client_id: string
+          contact_email: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          location_type: Database["public"]["Enums"]["job_location_type"]
+          role: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          contact_email: string
+          created_at?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          location_type?: Database["public"]["Enums"]["job_location_type"]
+          role: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          contact_email?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          location_type?: Database["public"]["Enums"]["job_location_type"]
+          role?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "client_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -156,6 +236,7 @@ export type Database = {
     }
     Enums: {
       availability_status: "available" | "busy" | "unavailable"
+      job_location_type: "remote" | "hybrid" | "onsite"
       user_role: "freelancer" | "client"
     }
     CompositeTypes: {
@@ -285,6 +366,7 @@ export const Constants = {
   public: {
     Enums: {
       availability_status: ["available", "busy", "unavailable"],
+      job_location_type: ["remote", "hybrid", "onsite"],
       user_role: ["freelancer", "client"],
     },
   },

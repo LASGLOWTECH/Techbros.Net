@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Edit, Eye, Settings, Image, Loader2 } from "lucide-react";
+import { User, Edit, Eye, Settings, Image, Loader2, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -59,11 +59,11 @@ export default function FreelancerDashboard() {
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Profile Overview */}
-        <div className="rounded-2xl border border-white/10 p-6 mb-6 shadow-card" style={{ background: 'hsl(220 41% 14%)' }}>
+        <div className="rounded-2xl border border-border p-6 mb-6 shadow-card bg-card">
           <div className="flex items-center gap-4 mb-6">
-            <Avatar className="h-16 w-16 border-2">
+            <Avatar className="h-16 w-16 border-2 border-border">
               <AvatarImage src={profile?.avatar_url} />
-              <AvatarFallback className="gradient-hero text-primary-foreground text-xl">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-xl">{initials}</AvatarFallback>
             </Avatar>
             <div>
               <h2 className="text-xl font-bold">{profile?.full_name}</h2>
@@ -77,7 +77,7 @@ export default function FreelancerDashboard() {
               <span className="font-semibold">{completion}%</span>
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div className="h-full gradient-hero transition-all" style={{ width: `${completion}%` }} />
+              <div className="h-full bg-primary transition-all" style={{ width: `${completion}%` }} />
             </div>
           </div>
 
@@ -89,16 +89,21 @@ export default function FreelancerDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Link to="/freelancer/profile" className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <Link to="/freelancer/profile" className="rounded-xl border border-border p-5 hover:shadow-lg hover:border-primary/30 transition-all bg-card">
             <Edit className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1 text-white">Edit Profile</h3>
-            <p className="text-sm text-white/70">Update your info and skills</p>
+            <h3 className="font-semibold mb-1">Edit Profile</h3>
+            <p className="text-sm text-muted-foreground">Update your info and skills</p>
           </Link>
-          <Link to={`/talent/${user?.id}`} className="rounded-xl border border-white/10 p-5 hover:shadow-lg hover:border-primary/30 transition-all" style={{ background: 'hsl(220 41% 14%)' }}>
+          <Link to={`/talent/${user?.id}`} className="rounded-xl border border-border p-5 hover:shadow-lg hover:border-primary/30 transition-all bg-card">
             <Eye className="h-6 w-6 text-primary mb-3" />
-            <h3 className="font-semibold mb-1 text-white">Preview Profile</h3>
-            <p className="text-sm text-white/70">See how clients view you</p>
+            <h3 className="font-semibold mb-1">Preview Profile</h3>
+            <p className="text-sm text-muted-foreground">See how clients view you</p>
+          </Link>
+          <Link to="/jobs" className="rounded-xl border border-border p-5 hover:shadow-lg hover:border-primary/30 transition-all bg-card">
+            <Briefcase className="h-6 w-6 text-primary mb-3" />
+            <h3 className="font-semibold mb-1">Browse Jobs</h3>
+            <p className="text-sm text-muted-foreground">Find your next opportunity</p>
           </Link>
         </div>
       </div>

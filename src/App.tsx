@@ -1,6 +1,11 @@
 import { Toaster } from "@/components/ui/toaster";
 import EditProfile from "@/pages/freelancer/EditProfile";
 import ClientSettings from "@/pages/client/Settings";
+import CompanyProfile from "@/pages/client/CompanyProfile";
+import ClientJobs from "@/pages/client/Jobs";
+import JobForm from "@/pages/client/JobForm";
+import Jobs from "@/pages/Jobs";
+import JobDetails from "@/pages/JobDetails";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,6 +36,8 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/jobs/:jobId" element={<JobDetails />} />
             <Route path="/talent/:userId" element={<TalentProfile />} />
             <Route path="/freelancer" element={<FreelancerDashboard />} />
             <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />
@@ -38,6 +45,10 @@ const App = () => (
             <Route path="/client" element={<ClientDashboard />} />
             <Route path="/client/dashboard" element={<ClientDashboard />} />
             <Route path="/client/settings" element={<ClientSettings />} />
+            <Route path="/client/company" element={<CompanyProfile />} />
+            <Route path="/client/jobs" element={<ClientJobs />} />
+            <Route path="/client/jobs/new" element={<JobForm />} />
+            <Route path="/client/jobs/:jobId/edit" element={<JobForm />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

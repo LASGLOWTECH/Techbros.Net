@@ -237,7 +237,7 @@ export type Database = {
     Enums: {
       availability_status: "available" | "busy" | "unavailable"
       job_location_type: "remote" | "hybrid" | "onsite"
-      user_role: "freelancer" | "client"
+      user_role: "freelancer" | "client" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -367,7 +367,7 @@ export const Constants = {
     Enums: {
       availability_status: ["available", "busy", "unavailable"],
       job_location_type: ["remote", "hybrid", "onsite"],
-      user_role: ["freelancer", "client"],
+      user_role: ["freelancer", "client", "admin"],
     },
   },
 } as const

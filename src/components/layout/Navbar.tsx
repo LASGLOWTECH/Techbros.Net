@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Code2, LogOut, User, LayoutDashboard, Briefcase } from "lucide-react";
+import { Menu, X, Code2, LogOut, User, LayoutDashboard, Briefcase, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -15,7 +15,13 @@ export function Navbar() {
     navigate("/");
   };
 
-  const dashboardPath = userRole === "freelancer" ? "/freelancer/dashboard" : "/client/dashboard";
+  const getDashboardPath = () => {
+    if (userRole === "admin") return "/admin/dashboard";
+    if (userRole === "freelancer") return "/freelancer/dashboard";
+    return "/client/dashboard";
+  };
+
+  const dashboardPath = getDashboardPath();
 
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + "/");
 
@@ -54,18 +60,29 @@ export function Navbar() {
             
             {user ? (
               <>
+              {userRole === "admin" && (
                 <Link
-                  to={dashboardPath}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    location.pathname.includes("/dashboard") || location.pathname.includes("/freelancer") || location.pathname.includes("/client") ? "text-primary" : "text-muted-foreground"
+                  to="/admin/dashboard"
+                  className={`text-sm font-medium transition-colors hover:text-destructive flex items-center gap-1 ${
+                    location.pathname.includes("/admin") ? "text-destructive" : "text-muted-foreground"
                   }`}
                 >
-                  Dashboard
+                  <Shield className="h-4 w-4" />
+                  Admin
                 </Link>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
+              )}
+              <Link
+                to={dashboardPath}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location.pathname.includes("/dashboard") || location.pathname.includes("/freelancer") || location.pathname.includes("/client") ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                Dashboard
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
               </>
             ) : (
               <>
@@ -115,6 +132,16 @@ export function Navbar() {
               
               {user ? (
                 <>
+                  {userRole === "admin" && (
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-destructive/10 transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Shield className="h-4 w-4 text-destructive" />
+                      <span className="font-medium text-destructive">Admin Panel</span>
+                    </Link>
+                  )}
                   <Link
                     to={dashboardPath}
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition-colors"

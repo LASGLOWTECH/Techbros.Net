@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_actions: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          target_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       bookmarks: {
         Row: {
           created_at: string
@@ -173,6 +203,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_suspended: boolean
           updated_at: string
           user_id: string
         }
@@ -182,6 +213,7 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          is_suspended?: boolean
           updated_at?: string
           user_id: string
         }
@@ -191,6 +223,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_suspended?: boolean
           updated_at?: string
           user_id?: string
         }

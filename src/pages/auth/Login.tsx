@@ -53,7 +53,9 @@ export default function Login() {
 
     // Navigate based on role - delay to allow role to be fetched
     setTimeout(() => {
-      if (userRole === "freelancer") {
+      if (userRole === "admin") {
+        navigate("/admin/dashboard");
+      } else if (userRole === "freelancer") {
         navigate("/freelancer/dashboard");
       } else if (userRole === "client") {
         navigate("/client/dashboard");

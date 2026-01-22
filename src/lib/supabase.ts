@@ -3,7 +3,7 @@ import type { Database } from "@/integrations/supabase/types";
 
 export { supabase };
 
-export type UserRole = "freelancer" | "client";
+export type UserRole = "freelancer" | "client" | "admin";
 export type AvailabilityStatus = "available" | "busy" | "unavailable";
 export type JobLocationType = "remote" | "hybrid" | "onsite";
 

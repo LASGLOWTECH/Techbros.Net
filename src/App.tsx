@@ -19,6 +19,7 @@ import Explore from "./pages/Explore";
 import TalentProfile from "./pages/TalentProfile";
 import FreelancerDashboard from "./pages/freelancer/Dashboard";
 import ClientDashboard from "./pages/client/Dashboard";
+import AdminDashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,9 @@ const App = () => (
             <Route path="/client/jobs" element={<ClientJobs />} />
             <Route path="/client/jobs/new" element={<JobForm />} />
             <Route path="/client/jobs/:jobId/edit" element={<JobForm />} />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

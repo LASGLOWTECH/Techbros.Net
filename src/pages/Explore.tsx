@@ -56,7 +56,7 @@ export default function Explore() {
         project_link,
         portfolio_images,
         is_public,
-        profiles!inner (
+        profiles (
           full_name,
           email,
           avatar_url

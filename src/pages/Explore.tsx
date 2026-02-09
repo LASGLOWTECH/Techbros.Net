@@ -58,7 +58,6 @@ export default function Explore() {
         is_public,
         profiles (
           full_name,
-          email,
           avatar_url
         )
       `)
@@ -73,7 +72,6 @@ export default function Explore() {
     const formattedTalents: FreelancerWithProfile[] = (data || []).map((item: any) => ({
       user_id: item.user_id,
       full_name: item.profiles.full_name,
-      email: item.profiles.email,
       avatar_url: item.profiles.avatar_url,
       role_title: item.role_title,
       bio: item.bio,

@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import {
   MapPin,
   ExternalLink,
-  Mail,
   Share2,
   Bookmark,
   BookmarkCheck,
@@ -67,7 +66,6 @@ export default function TalentProfile() {
         is_public,
         profiles (
           full_name,
-          email,
           avatar_url
         )
       `)
@@ -93,7 +91,6 @@ export default function TalentProfile() {
     const formatted: FreelancerWithProfile = {
       user_id: data.user_id,
       full_name: (data.profiles as any).full_name,
-      email: (data.profiles as any).email,
       avatar_url: (data.profiles as any).avatar_url,
       role_title: data.role_title,
       bio: data.bio,
@@ -275,12 +272,6 @@ export default function TalentProfile() {
 
               {/* Actions */}
               <div className="flex flex-wrap gap-3">
-                <a href={`mailto:${talent.email}`}>
-                  <Button>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Contact
-                  </Button>
-                </a>
                 {talent.project_link && (
                   <a
                     href={talent.project_link}

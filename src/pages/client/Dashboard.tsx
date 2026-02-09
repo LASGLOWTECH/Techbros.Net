@@ -39,13 +39,12 @@ export default function ClientDashboard() {
     const ids = bookmarks.map(b => b.freelancer_id);
     const { data } = await supabase
       .from("freelancer_profiles")
-      .select(`user_id, role_title, bio, skills, availability, location, project_link, portfolio_images, is_public, profiles(full_name, email, avatar_url)`)
+      .select(`user_id, role_title, bio, skills, availability, location, project_link, portfolio_images, is_public, profiles(full_name, avatar_url)`)
       .in("user_id", ids);
 
     const formatted = (data || []).map((item: any) => ({
       user_id: item.user_id,
       full_name: item.profiles.full_name,
-      email: item.profiles.email,
       avatar_url: item.profiles.avatar_url,
       role_title: item.role_title,
       bio: item.bio,

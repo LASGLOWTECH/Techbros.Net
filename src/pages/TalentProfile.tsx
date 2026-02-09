@@ -8,6 +8,7 @@ import {
   BookmarkCheck,
   ArrowLeft,
   Loader2,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +67,8 @@ export default function TalentProfile() {
         is_public,
         profiles (
           full_name,
-          avatar_url
+          avatar_url,
+          email
         )
       `)
       .eq("user_id", userId)
@@ -91,6 +93,7 @@ export default function TalentProfile() {
     const formatted: FreelancerWithProfile = {
       user_id: data.user_id,
       full_name: (data.profiles as any).full_name,
+      email: (data.profiles as any).email,
       avatar_url: (data.profiles as any).avatar_url,
       role_title: data.role_title,
       bio: data.bio,
@@ -272,6 +275,16 @@ export default function TalentProfile() {
 
               {/* Actions */}
               <div className="flex flex-wrap gap-3">
+                {userRole === "client" && talent.email && (
+                  <a
+                    href={`mailto:${talent.email}?subject=${encodeURIComponent(`Hiring Inquiry - ${talent.role_title || 'Freelancer'}`)}&body=${encodeURIComponent(`Hi ${talent.full_name},\n\nI came across your profile on TechBros Network and I'm interested in working with you.\n\nLooking forward to hearing from you!`)}`}
+                  >
+                    <Button variant="hero" size="lg">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Hire Me
+                    </Button>
+                  </a>
+                )}
                 {talent.project_link && (
                   <a
                     href={talent.project_link}

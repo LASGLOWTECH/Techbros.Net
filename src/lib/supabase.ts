@@ -16,7 +16,7 @@ export type Job = Database["public"]["Tables"]["jobs"]["Row"];
 export interface FreelancerWithProfile {
   user_id: string;
   full_name: string;
-  email: string;
+  email?: string | null;
   avatar_url: string | null;
   role_title: string | null;
   bio: string | null;

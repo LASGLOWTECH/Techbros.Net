@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { TrialBanner } from "@/components/monetization/TrialBanner";
 
 export default function FreelancerDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -56,7 +57,8 @@ export default function FreelancerDashboard() {
   return (
     <Layout>
       <div className="container px-4 py-8 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+        <TrialBanner />
 
         {/* Profile Overview */}
         <div className="rounded-2xl border border-border p-6 mb-6 shadow-card bg-card">

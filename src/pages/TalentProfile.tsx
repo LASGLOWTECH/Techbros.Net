@@ -19,6 +19,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import type { FreelancerWithProfile, AvailabilityStatus } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { UnlockContactButton } from "@/components/monetization/UnlockContactButton";
+import { BuyCreditsModal } from "@/components/monetization/BuyCreditsModal";
 
 const availabilityColors: Record<AvailabilityStatus, string> = {
   available: "bg-success/10 text-success border-success/20",
@@ -39,6 +41,7 @@ export default function TalentProfile() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [profileNotComplete, setProfileNotComplete] = useState(false);
+  const [showBuyCredits, setShowBuyCredits] = useState(false);
 
   const { user, userRole } = useAuth();
   const { toast } = useToast();
@@ -275,15 +278,13 @@ export default function TalentProfile() {
 
               {/* Actions */}
               <div className="flex flex-wrap gap-3">
-                {userRole === "client" && talent.email && (
-                  <a
-                    href={`mailto:${talent.email}?subject=${encodeURIComponent(`Hiring Inquiry - ${talent.role_title || 'Freelancer'}`)}&body=${encodeURIComponent(`Hi ${talent.full_name},\n\nI came across your profile on TechBros Network and I'm interested in working with you.\n\nLooking forward to hearing from you!`)}`}
-                  >
-                    <Button variant="hero" size="lg">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Hire Me
-                    </Button>
-                  </a>
+                {userRole === "client" && (
+                  <UnlockContactButton
+                    expertId={talent.user_id}
+                    expertName={talent.full_name}
+                    roleTitle={talent.role_title}
+                    onBuyCredits={() => setShowBuyCredits(true)}
+                  />
                 )}
                 {talent.project_link && (
                   <a
@@ -364,6 +365,7 @@ export default function TalentProfile() {
           </div>
         )}
       </div>
+      <BuyCreditsModal open={showBuyCredits} onOpenChange={setShowBuyCredits} />
     </Layout>
   );
 }

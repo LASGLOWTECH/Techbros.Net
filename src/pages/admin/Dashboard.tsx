@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Briefcase, Building2, Activity } from "lucide-react";
+import { Loader2, Users, Briefcase, Building2, Activity, Coins } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminNavbar from "@/components/admin/AdminNavbar";
@@ -10,6 +10,7 @@ import UsersTable from "@/components/admin/UsersTable";
 import JobsTable from "@/components/admin/JobsTable";
 import CompaniesTable from "@/components/admin/CompaniesTable";
 import ActivityFeed from "@/components/admin/ActivityFeed";
+import { AdminMonetization } from "@/components/admin/AdminMonetization";
 
 interface PlatformMetrics {
   totalUsers: number;
@@ -160,6 +161,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="jobs">Jobs</TabsTrigger>
             <TabsTrigger value="companies">Companies</TabsTrigger>
+            <TabsTrigger value="monetization">Monetization</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
           <TabsContent value="users">
@@ -170,6 +172,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="companies">
             <CompaniesTable onRefresh={fetchMetrics} />
+          </TabsContent>
+          <TabsContent value="monetization">
+            <AdminMonetization />
           </TabsContent>
           <TabsContent value="activity">
             <ActivityFeed />

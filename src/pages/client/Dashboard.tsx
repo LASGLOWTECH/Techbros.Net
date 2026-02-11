@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bookmark, Loader2, Settings, Building2, Briefcase } from "lucide-react";
+import { Search, Bookmark, Loader2, Settings, Building2, Briefcase, Coins } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { TalentCard } from "@/components/talent/TalentCard";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { FreelancerWithProfile } from "@/lib/supabase";
+import { CreditBalanceWidget } from "@/components/monetization/CreditBalanceWidget";
+import { BuyCreditsModal } from "@/components/monetization/BuyCreditsModal";
+import { TrialBanner } from "@/components/monetization/TrialBanner";
+import { PromoCodeInput } from "@/components/monetization/PromoCodeInput";
 
 export default function ClientDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -13,6 +17,7 @@ export default function ClientDashboard() {
   const [bookmarkedTalents, setBookmarkedTalents] = useState<FreelancerWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [jobCount, setJobCount] = useState(0);
+  const [showBuyCredits, setShowBuyCredits] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -89,7 +94,16 @@ export default function ClientDashboard() {
   return (
     <Layout>
       <div className="container px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <CreditBalanceWidget onClick={() => setShowBuyCredits(true)} />
+        </div>
+
+        <TrialBanner />
+
+        <div className="mb-6">
+          <PromoCodeInput />
+        </div>
 
         {/* Quick Actions */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
@@ -136,6 +150,7 @@ export default function ClientDashboard() {
             ))}
           </div>
         )}
+        <BuyCreditsModal open={showBuyCredits} onOpenChange={setShowBuyCredits} />
       </div>
     </Layout>
   );

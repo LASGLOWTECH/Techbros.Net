@@ -44,6 +44,65 @@ export type Database = {
         }
         Relationships: []
       }
+      agencies: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      agency_members: {
+        Row: {
+          agency_id: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_members_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookmarks: {
         Row: {
           created_at: string
@@ -236,6 +295,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      saved_candidates: {
+        Row: {
+          agency_id: string
+          created_at: string
+          expert_id: string
+          id: string
+          saved_by: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          expert_id: string
+          id?: string
+          saved_by: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          expert_id?: string
+          id?: string
+          saved_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_candidates_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

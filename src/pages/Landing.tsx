@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Users, Briefcase, Zap, Shield, Globe, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
-import heroImage from "@/assets/hero-tech-person.png";
+import heroImage from "@/assets/hero-tech-landscape.png";
 
 const features = [
   {
@@ -43,27 +43,40 @@ export default function Landing() {
   return (
     <Layout showMobileNav={false}>
       {/* Hero Section - Spline-inspired split layout */}
-      <section className="relative min-h-[100vh] flex items-center overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(220 50% 15%) 100%)' }}>
-        {/* Ambient glow effects */}
-        <div className="absolute top-0 right-0 w-[60%] h-full bg-[radial-gradient(ellipse_at_center_right,_hsl(217_91%_53%_/_0.15),_transparent_60%)]" />
-        <div className="absolute bottom-0 left-0 w-[40%] h-[60%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.1),_transparent_60%)]" />
-        
-        {/* Floating grid lines */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: 'linear-gradient(hsl(0 0% 100%) 1px, transparent 1px), linear-gradient(90deg, hsl(0 0% 100%) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden">
+        {/* Full-screen background image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroImage}
+            alt="Tech professionals collaborating"
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+          {/* Gradient blur overlay */}
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(to right, hsl(222 47% 11% / 0.95) 0%, hsl(222 47% 11% / 0.85) 35%, hsl(222 47% 11% / 0.5) 65%, hsl(222 47% 11% / 0.3) 100%)'
+          }} />
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(to top, hsl(222 47% 11%) 0%, transparent 30%)'
+          }} />
+          <div className="absolute inset-0 backdrop-blur-[2px]" style={{
+            maskImage: 'linear-gradient(to right, black 0%, black 30%, transparent 60%)',
+            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 30%, transparent 60%)'
+          }} />
+        </div>
+
+        {/* Ambient glow */}
+        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.15),_transparent_60%)]" />
 
         <div className="container relative z-10 px-4 py-12 md:py-0">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-4 items-center min-h-[85vh]">
-            {/* Left - Content */}
-            <div className="animate-slide-up order-2 lg:order-1">
+          <div className="max-w-2xl min-h-[85vh] flex flex-col justify-center">
+            <div className="animate-slide-up">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-sm font-medium text-primary mb-8">
                 <Sparkles className="h-3.5 w-3.5" />
                 Nigeria's Premier Tech Talent Network
                 <ChevronRight className="h-3.5 w-3.5" />
               </div>
-              
+
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6 tracking-tight">
                 Connect.
                 <br />
@@ -71,12 +84,12 @@ export default function Landing() {
                 <br />
                 <span className="text-gradient">Get Hired.</span>
               </h1>
-              
+
               <p className="max-w-lg text-lg text-muted-foreground mb-10 leading-relaxed">
-                The go-to platform for tech freelancers to showcase their 
+                The go-to platform for tech freelancers to showcase their
                 skills and for clients to discover exceptional talent across Africa.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row items-start gap-4 mb-12">
                 <Link to="/signup?role=freelancer">
                   <Button variant="accent" size="xl" className="group min-w-[200px]">
@@ -103,49 +116,6 @@ export default function Landing() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Right - Hero Image */}
-            <div className="relative order-1 lg:order-2 flex items-center justify-center">
-              {/* Glow behind image */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-[80%] h-[80%] rounded-full bg-primary/20 blur-[100px]" />
-              </div>
-              
-              {/* Main image */}
-              <div className="relative z-10 w-full max-w-[500px] lg:max-w-[550px]">
-                <img 
-                  src={heroImage} 
-                  alt="Tech professional working with floating code interfaces"
-                  className="w-full h-auto object-contain drop-shadow-2xl animate-float"
-                  loading="eager"
-                />
-              </div>
-
-              {/* Floating badge cards */}
-              <div className="absolute top-[15%] right-[5%] lg:right-0 z-20 glass rounded-xl px-4 py-3 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">New Jobs</div>
-                    <div className="text-sm font-semibold text-foreground">+24 today</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="absolute bottom-[20%] left-[0%] lg:left-[-5%] z-20 glass rounded-xl px-4 py-3 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-[hsl(var(--success)_/_0.2)] flex items-center justify-center">
-                    <Users className="h-4 w-4 text-[hsl(var(--success))]" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Active Talents</div>
-                    <div className="text-sm font-semibold text-foreground">500+ online</div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

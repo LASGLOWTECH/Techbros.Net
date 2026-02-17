@@ -68,29 +68,26 @@ export default function Landing() {
         {/* Ambient glow */}
         <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.15),_transparent_60%)]" />
 
-        <div className="container relative z-10 px-4 py-12 md:py-0">
+        <div className="container relative z-10 px-6 sm:px-8 lg:px-12 py-20 md:py-0">
           <div className="max-w-2xl min-h-[85vh] flex flex-col justify-center">
-            <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-sm font-medium text-primary mb-8">
+            <div className="animate-slide-up space-y-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-sm font-medium text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
                 Nigeria's Premier Tech Talent Network
                 <ChevronRight className="h-3.5 w-3.5" />
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6 tracking-tight">
-                Connect.
-                <br />
-                Showcase.
-                <br />
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
+                Connect & Showcase.{" "}
                 <span className="text-gradient">Get Hired.</span>
               </h1>
 
-              <p className="max-w-lg text-lg text-muted-foreground mb-10 leading-relaxed">
+              <p className="max-w-lg text-lg text-muted-foreground leading-relaxed">
                 The go-to platform for tech freelancers to showcase their
                 skills and for clients to discover exceptional talent across Africa.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-start gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row items-start gap-4">
                 <Link to="/signup?role=freelancer">
                   <Button variant="accent" size="xl" className="group min-w-[200px]">
                     Join as Freelancer
@@ -105,7 +102,7 @@ export default function Landing() {
               </div>
 
               {/* Stats row */}
-              <div className="flex items-center gap-8 pt-6 border-t border-border/50">
+              <div className="flex items-center gap-10 pt-8 border-t border-border/50">
                 {[
                   { value: "500+", label: "Freelancers" },
                   { value: "100+", label: "Clients" },
@@ -113,7 +110,7 @@ export default function Landing() {
                 ].map((stat) => (
                   <div key={stat.label}>
                     <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{stat.label}</div>
                   </div>
                 ))}
               </div>

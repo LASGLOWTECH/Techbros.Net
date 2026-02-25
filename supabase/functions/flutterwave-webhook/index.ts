@@ -2,7 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 Deno.serve(async (req) => {
@@ -33,7 +34,7 @@ Deno.serve(async (req) => {
       const meta = data.meta || {};
       const txRef = data.tx_ref;
       const userId = meta.user_id;
-      const purpose = meta.purpose; // "buy_credits" | "agency_subscribe"
+      const purpose = meta.purpose;
 
       if (!userId) {
         return new Response(JSON.stringify({ error: "Missing user_id in meta" }), {
@@ -42,7 +43,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Idempotency: check if transaction already processed
+      // Idempotency check
       const { data: existing } = await supabase
         .from("credit_transactions")
         .select("id")
@@ -64,7 +65,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // Upsert wallet
         const { data: wallet } = await supabase
           .from("credits_wallets")
           .select("balance")
@@ -82,13 +82,32 @@ Deno.serve(async (req) => {
             .insert({ user_id: userId, balance: credits });
         }
 
-        // Record transaction
         await supabase.from("credit_transactions").insert({
           user_id: userId,
           amount: credits,
           type: "purchase",
           ref: txRef,
         });
+
+        // Record promo redemption if applicable
+        if (meta.promo_code) {
+          const { data: promo } = await supabase
+            .from("promo_codes")
+            .select("id, used_count")
+            .eq("code", meta.promo_code.toUpperCase())
+            .maybeSingle();
+
+          if (promo) {
+            await supabase.from("promo_redemptions").insert({
+              promo_id: promo.id,
+              user_id: userId,
+            });
+            await supabase
+              .from("promo_codes")
+              .update({ used_count: (promo.used_count || 0) + 1 })
+              .eq("id", promo.id);
+          }
+        }
       } else if (purpose === "agency_subscribe") {
         const agencyId = meta.agency_id;
         const tier = meta.tier || "pro";
@@ -106,6 +125,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    console.error("flutterwave-webhook error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -2,7 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const CREDIT_PACKS = [
@@ -32,16 +33,16 @@ Deno.serve(async (req) => {
     );
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const userId = claimsData.claims.sub;
-    const userEmail = claimsData.claims.email;
+    const userId = user.id;
+    const userEmail = user.email;
     const { pack_id, promo_code } = await req.json();
 
     const pack = CREDIT_PACKS.find((p) => p.id === pack_id);
@@ -74,7 +75,6 @@ Deno.serve(async (req) => {
         const notExpired = !promo.expires_at || new Date(promo.expires_at) > now;
         const notMaxed = !promo.max_redemptions || promo.used_count < promo.max_redemptions;
 
-        // Check if user already redeemed
         const { data: redeemed } = await adminClient
           .from("promo_redemptions")
           .select("id")
@@ -94,9 +94,15 @@ Deno.serve(async (req) => {
     }
 
     const txRef = `credits_${userId}_${Date.now()}`;
-    const flutterwaveKey = Deno.env.get("FLUTTERWAVE_SECRET_KEY")!;
+    const flutterwaveKey = Deno.env.get("FLUTTERWAVE_SECRET_KEY");
+    
+    if (!flutterwaveKey) {
+      return new Response(JSON.stringify({ error: "Payment service not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    // Initialize Flutterwave payment
     const flwResponse = await fetch("https://api.flutterwave.com/v3/payments", {
       method: "POST",
       headers: {
@@ -122,6 +128,16 @@ Deno.serve(async (req) => {
       }),
     });
 
+    const contentType = flwResponse.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      const text = await flwResponse.text();
+      console.error("Non-JSON response from Flutterwave:", text);
+      return new Response(JSON.stringify({ error: "Payment gateway returned an unexpected response" }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const flwData = await flwResponse.json();
 
     if (flwData.status === "success") {
@@ -131,11 +147,12 @@ Deno.serve(async (req) => {
       );
     }
 
-    return new Response(JSON.stringify({ error: "Payment initialization failed", details: flwData }), {
+    return new Response(JSON.stringify({ error: "Payment initialization failed", details: flwData.message || flwData }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    console.error("buy-credits error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

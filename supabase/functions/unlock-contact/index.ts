@@ -2,7 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const UNLOCK_COST = 1;
@@ -28,15 +29,15 @@ Deno.serve(async (req) => {
     );
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const clientId = claimsData.claims.sub;
+    const clientId = user.id;
     const { expert_id } = await req.json();
 
     if (!expert_id) {
@@ -60,7 +61,6 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existing) {
-      // Already unlocked, return email
       const { data: profile } = await adminClient
         .from("profiles")
         .select("email")
@@ -83,7 +83,6 @@ Deno.serve(async (req) => {
     const isPremium = trial && new Date(trial.expires_at) > new Date();
 
     if (!isPremium) {
-      // Check wallet balance
       const { data: wallet } = await adminClient
         .from("credits_wallets")
         .select("balance")
@@ -97,13 +96,11 @@ Deno.serve(async (req) => {
         );
       }
 
-      // Deduct credits
       await adminClient
         .from("credits_wallets")
         .update({ balance: wallet.balance - UNLOCK_COST, updated_at: new Date().toISOString() })
         .eq("user_id", clientId);
 
-      // Record spend
       await adminClient.from("credit_transactions").insert({
         user_id: clientId,
         amount: -UNLOCK_COST,
@@ -112,13 +109,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Record unlock
     await adminClient.from("contact_unlocks").insert({
       client_id: clientId,
       expert_id: expert_id,
     });
 
-    // Fetch expert email
     const { data: profile } = await adminClient
       .from("profiles")
       .select("email")
@@ -130,6 +125,7 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
+    console.error("unlock-contact error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

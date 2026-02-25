@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import {
   MapPin,
   ExternalLink,
-  Share2,
   Bookmark,
   BookmarkCheck,
   ArrowLeft,
@@ -298,9 +297,16 @@ export default function TalentProfile() {
                     </Button>
                   </a>
                 )}
-                <Button variant="outline" onClick={shareProfile}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const subject = encodeURIComponent(`Hiring Inquiry - ${talent.role_title || 'Freelancer'}`);
+                    const body = encodeURIComponent(`Hi ${talent.full_name},\n\nI came across your profile on TechBros Network and I'm interested in hiring you for a project.\n\nLooking forward to hearing from you!`);
+                    window.location.href = `mailto:${talent.email}?subject=${subject}&body=${body}`;
+                  }}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Hire Me
                 </Button>
                 {userRole === "client" && (
                   <Button variant="ghost" onClick={toggleBookmark}>

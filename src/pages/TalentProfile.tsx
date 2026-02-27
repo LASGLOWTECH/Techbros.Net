@@ -297,17 +297,16 @@ export default function TalentProfile() {
                     </Button>
                   </a>
                 )}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const subject = encodeURIComponent(`Hiring Inquiry - ${talent.role_title || 'Freelancer'}`);
-                    const body = encodeURIComponent(`Hi ${talent.full_name},\n\nI came across your profile on TechBros Network and I'm interested in hiring you for a project.\n\nLooking forward to hearing from you!`);
-                    window.location.href = `mailto:${talent.email}?subject=${subject}&body=${body}`;
-                  }}
+                <a
+                  href={`mailto:${talent.email}?subject=${encodeURIComponent(`Hiring Inquiry - ${talent.role_title || 'Freelancer'}`)}&body=${encodeURIComponent(`Hi ${talent.full_name},\n\nI came across your profile on TechBros Network and I'm interested in hiring you for a project.\n\nLooking forward to hearing from you!`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Hire Me
-                </Button>
+                  <Button variant="outline">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Hire Me
+                  </Button>
+                </a>
                 {userRole === "client" && (
                   <Button variant="ghost" onClick={toggleBookmark}>
                     {isBookmarked ? (

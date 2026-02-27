@@ -59,13 +59,13 @@ export default function JobDetails() {
     setLoading(false);
   };
 
-  const handleApply = () => {
-    if (!job) return;
+  const getMailtoUrl = () => {
+    if (!job) return "#";
     const subject = encodeURIComponent(`Application for ${job.title}`);
     const body = encodeURIComponent(
       `Hi,\n\nI am interested in the ${job.title} position at ${job.client_profiles.company_name || "your company"}.\n\n[Please attach your CV/resume and any relevant portfolio links]\n\nBest regards`
     );
-    window.location.href = `mailto:${job.contact_email}?subject=${subject}&body=${body}`;
+    return `mailto:${job.contact_email}?subject=${subject}&body=${body}`;
   };
 
   if (loading) {
@@ -144,10 +144,12 @@ export default function JobDetails() {
         </div>
 
         {/* Apply Button */}
-        <Button size="lg" className="w-full sm:w-auto mb-8" onClick={handleApply}>
-          <Mail className="h-4 w-4 mr-2" />
-          Apply via Email
-        </Button>
+        <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
+          <Button size="lg" className="w-full sm:w-auto mb-8">
+            <Mail className="h-4 w-4 mr-2" />
+            Apply via Email
+          </Button>
+        </a>
 
         <Separator className="my-8" />
 
@@ -160,6 +162,19 @@ export default function JobDetails() {
             <div className="prose prose-invert max-w-none">
               <p className="whitespace-pre-wrap text-foreground/90">{job.description}</p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact Email */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Contact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <a href={`mailto:${job.contact_email}`} className="flex items-center gap-2 text-primary hover:underline">
+              <Mail className="h-4 w-4" />
+              {job.contact_email}
+            </a>
           </CardContent>
         </Card>
 
@@ -183,10 +198,12 @@ export default function JobDetails() {
           <p className="text-muted-foreground mb-4">
             Send your application to get started
           </p>
-          <Button size="lg" onClick={handleApply}>
-            <Mail className="h-4 w-4 mr-2" />
-            Apply via Email
-          </Button>
+          <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
+            <Button size="lg">
+              <Mail className="h-4 w-4 mr-2" />
+              Apply via Email
+            </Button>
+          </a>
         </div>
       </div>
     </Layout>

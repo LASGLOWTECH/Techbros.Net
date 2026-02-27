@@ -47,14 +47,16 @@ const jobSchema = z.object({
 type JobFormData = z.infer<typeof jobSchema>;
 
 export default function JobForm() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userRole, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { jobId } = useParams();
   const isEditing = !!jobId;
+  const isAdmin = userRole === "admin";
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [clientProfileId, setClientProfileId] = useState<string | null>(null);
+  const [clientProfiles, setClientProfiles] = useState<{ id: string; company_name: string | null }[]>([]);
 
   const form = useForm<JobFormData>({
     resolver: zodResolver(jobSchema),
@@ -76,33 +78,52 @@ export default function JobForm() {
   }, [user, authLoading]);
 
   const initializeForm = async () => {
-    // Get client profile
-    const { data: profile } = await supabase
-      .from("client_profiles")
-      .select("id")
-      .eq("user_id", user!.id)
-      .maybeSingle();
+    if (isAdmin) {
+      // Admin: fetch all client profiles to pick from
+      const { data: profiles } = await supabase
+        .from("client_profiles")
+        .select("id, company_name")
+        .order("company_name");
 
-    if (!profile) {
-      toast({
-        title: "Profile required",
-        description: "Please set up your company profile first.",
-        variant: "destructive",
-      });
-      navigate("/client/company");
-      return;
+      setClientProfiles(profiles || []);
+
+      if (profiles && profiles.length > 0) {
+        setClientProfileId(profiles[0].id);
+      }
+    } else {
+      // Client: get their own profile
+      const { data: profile } = await supabase
+        .from("client_profiles")
+        .select("id")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+
+      if (!profile) {
+        toast({
+          title: "Profile required",
+          description: "Please set up your company profile first.",
+          variant: "destructive",
+        });
+        navigate("/client/company");
+        return;
+      }
+
+      setClientProfileId(profile.id);
     }
-
-    setClientProfileId(profile.id);
 
     // If editing, fetch job data
     if (isEditing) {
-      const { data: job, error } = await supabase
+      const query = supabase
         .from("jobs")
         .select("*")
-        .eq("id", jobId)
-        .eq("client_id", profile.id)
-        .single();
+        .eq("id", jobId);
+      
+      // Clients can only edit their own jobs; admins can edit any
+      if (!isAdmin) {
+        query.eq("client_id", clientProfileId!);
+      }
+
+      const { data: job, error } = await query.single();
 
       if (error || !job) {
         toast({
@@ -179,7 +200,7 @@ export default function JobForm() {
           ? "Your job posting has been updated."
           : "Your job posting is now live!",
       });
-      navigate("/client/jobs");
+      navigate(isAdmin ? "/admin/dashboard" : "/client/jobs");
     }
   };
 
@@ -199,10 +220,10 @@ export default function JobForm() {
         <Button
           variant="ghost"
           className="mb-6"
-          onClick={() => navigate("/client/jobs")}
+          onClick={() => navigate(isAdmin ? "/admin/dashboard" : "/client/jobs")}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Jobs
+          {isAdmin ? "Back to Dashboard" : "Back to Jobs"}
         </Button>
 
         <h1 className="text-3xl font-bold mb-2">
@@ -224,6 +245,24 @@ export default function JobForm() {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Admin: Company selector */}
+                {isAdmin && clientProfiles.length > 0 && (
+                  <div className="space-y-2">
+                    <FormLabel>Company *</FormLabel>
+                    <Select value={clientProfileId || ""} onValueChange={setClientProfileId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select company" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clientProfiles.map((cp) => (
+                          <SelectItem key={cp.id} value={cp.id}>
+                            {cp.company_name || "Unnamed Company"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <FormField
                   control={form.control}
                   name="title"
@@ -317,7 +356,7 @@ export default function JobForm() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate("/client/jobs")}
+                    onClick={() => navigate(isAdmin ? "/admin/dashboard" : "/client/jobs")}
                   >
                     Cancel
                   </Button>

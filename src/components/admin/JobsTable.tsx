@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Trash2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Trash2, Eye, EyeOff, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,7 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
   const [jobs, setJobs] = useState<JobWithCompany[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchJobs();
@@ -190,8 +192,12 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Job Moderation</CardTitle>
+        <Button size="sm" onClick={() => navigate("/admin/jobs/new")}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Job
+        </Button>
       </CardHeader>
       <CardContent>
         {jobs.length === 0 ? (

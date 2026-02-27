@@ -53,6 +53,7 @@ const App = () => (
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/jobs/new" element={<JobForm />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

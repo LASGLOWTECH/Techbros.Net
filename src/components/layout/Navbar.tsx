@@ -33,9 +33,7 @@ export function Navbar() {
         <div className="flex h-14 items-center justify-between rounded-2xl border border-border/40 bg-background/60 backdrop-blur-2xl px-5 shadow-lg shadow-black/20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Code2 className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <img src={logo} alt="TechBros Network" className="h-8 w-8 rounded-lg" />
             <span className="text-base font-semibold tracking-tight hidden sm:block text-foreground">
               Tech<span className="text-primary">Bros</span>
             </span>

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Users, Briefcase, Zap, Shield, Globe, Sparkles, Code2, ShieldCheck } from "lucide-react";
+import { ArrowRight, Users, Briefcase, Shield, Globe, Sparkles, Code2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
-import heroImage from "@/assets/hero-tech-landscape.png";
+import logo from "@/assets/logo.png";
 
 const features = [
   {
@@ -16,7 +16,7 @@ const features = [
     description: "Build a stunning portfolio without needing a personal website.",
   },
   {
-    icon: Zap,
+    icon: Sparkles,
     title: "Quick Connections",
     description: "Find and connect with the right talent or clients in minutes.",
   },
@@ -37,110 +37,69 @@ const features = [
   },
 ];
 
-const trustedBy = ["Google", "Meta", "Paystack", "Flutterwave", "Andela"];
-
 export default function Landing() {
   return (
     <Layout showMobileNav={false}>
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden">
-        {/* Desktop: Full-screen background image */}
-        <div className="absolute inset-0 hidden md:block">
-          <img
-            src={heroImage}
-            alt="Tech professionals collaborating"
-            className="w-full h-full object-cover"
-            loading="eager"
-          />
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to right, hsl(222 47% 11% / 0.95) 0%, hsl(222 47% 11% / 0.85) 35%, hsl(222 47% 11% / 0.5) 65%, hsl(222 47% 11% / 0.3) 100%)'
-          }} />
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to top, hsl(222 47% 11%) 0%, transparent 30%)'
-          }} />
-          <div className="absolute inset-0 backdrop-blur-[2px]" style={{
-            maskImage: 'linear-gradient(to right, black 0%, black 30%, transparent 60%)',
-            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 30%, transparent 60%)'
-          }} />
-        </div>
-
-        {/* Mobile: Simple dark background with glow */}
-        <div className="absolute inset-0 md:hidden" style={{
+        {/* Background */}
+        <div className="absolute inset-0" style={{
           background: 'linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(220 50% 8%) 100%)'
         }}>
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[radial-gradient(ellipse_at_center,_hsl(217_91%_53%_/_0.12),_transparent_70%)]" />
+          {/* Subtle vertical lines texture like reference */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
+            backgroundImage: 'repeating-linear-gradient(90deg, hsl(0 0% 100%) 0px, hsl(0 0% 100%) 1px, transparent 1px, transparent 40px)',
+          }} />
+          {/* Center glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_hsl(217_91%_53%_/_0.08),_transparent_70%)]" />
+          {/* Bottom glow */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[radial-gradient(ellipse_at_bottom,_hsl(217_91%_53%_/_0.12),_transparent_70%)]" />
         </div>
 
-        {/* Ambient glow - desktop only */}
-        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.15),_transparent_60%)] hidden md:block" />
-
-        {/* Desktop layout */}
-        <div className="container relative z-10 px-6 sm:px-8 lg:px-12 py-20 md:py-0 hidden md:block">
-          <div className="max-w-2xl min-h-[85vh] flex flex-col justify-center">
-            <div className="animate-slide-up space-y-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-sm font-medium text-primary">
-                <Sparkles className="h-3.5 w-3.5" />
-                Nigeria's Premier Tech Talent Network
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
+        {/* Desktop layout - centered like reference */}
+        <div className="container relative z-10 px-6 sm:px-8 lg:px-12 hidden md:flex items-center justify-center min-h-[100vh]">
+          <div className="max-w-4xl text-center">
+            <div className="animate-slide-up space-y-8">
+              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
                 Connect & Showcase.{" "}
                 <span className="text-gradient">Get Hired.</span>
               </h1>
 
-              <p className="max-w-lg text-lg text-muted-foreground leading-relaxed">
+              <p className="max-w-2xl mx-auto text-lg lg:text-xl text-muted-foreground leading-relaxed">
                 The go-to platform for tech freelancers to showcase their
                 skills and for clients to discover exceptional talent across Africa.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-start gap-4">
-                <Link to="/signup?role=freelancer">
-                  <Button variant="accent" size="xl" className="group min-w-[200px]">
-                    Join as Freelancer
+              <div className="flex items-center justify-center gap-4 pt-4">
+                <Link to="/explore">
+                  <Button variant="accent" size="xl" className="group rounded-full min-w-[220px]">
+                    Explore Talents
                     <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
-                <Link to="/signup?role=client">
-                  <Button variant="heroOutline" size="xl" className="min-w-[200px]">
-                    Hire Talent
+                <Link to="/signup">
+                  <Button variant="heroOutline" size="xl" className="rounded-full min-w-[200px]">
+                    Start Your Journey
                   </Button>
                 </Link>
-              </div>
-
-              {/* Stats row */}
-              <div className="flex items-center gap-10 pt-8 border-t border-border/50">
-                {[
-                  { value: "500+", label: "Freelancers" },
-                  { value: "100+", label: "Clients" },
-                  { value: "1K+", label: "Connections" },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{stat.label}</div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile layout - centered, simple like reference */}
+        {/* Mobile layout - centered, simple */}
         <div className="container relative z-10 px-6 md:hidden">
           <div className="min-h-[100vh] flex flex-col items-center justify-center text-center">
             <div className="animate-slide-up space-y-8 w-full max-w-sm">
-              {/* Logo icon */}
+              {/* Logo */}
               <div className="flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-glow">
-                  <Zap className="h-8 w-8 text-primary-foreground" />
-                </div>
+                <img src={logo} alt="TechBros Network" className="h-16 w-16 rounded-2xl" />
               </div>
 
-              {/* Title */}
               <h1 className="text-3xl font-bold text-foreground leading-tight">
                 TechBros <span className="text-gradient">Network</span>
               </h1>
 
-              {/* Subtitle */}
               <p className="text-base text-muted-foreground leading-relaxed px-2">
                 The exclusive hub where tech elite showcase skills and startups discover magic.
               </p>
@@ -178,7 +137,6 @@ export default function Landing() {
         </div>
       </section>
 
-
       {/* Features Section */}
       <section className="py-24" style={{ background: 'linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(220 50% 11%) 100%)' }}>
         <div className="container px-4">
@@ -213,15 +171,12 @@ export default function Landing() {
         </div>
       </section>
 
-
       {/* Footer */}
       <footer className="py-12 border-t border-border/30" style={{ background: 'hsl(222 47% 6%)' }}>
         <div className="container px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <Zap className="h-4 w-4 text-primary-foreground" />
-              </div>
+              <img src={logo} alt="TechBros Network" className="h-8 w-8 rounded-lg" />
               <span className="font-bold text-foreground">TechBros Network</span>
             </div>
             <p className="text-sm text-muted-foreground">

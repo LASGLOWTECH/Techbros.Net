@@ -178,17 +178,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Trusted By Strip */}
-      <section className="py-8 border-y border-border/30" style={{ background: 'hsl(222 47% 8%)' }}>
-        <div className="container px-4">
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">Trusted by teams at</span>
-            {trustedBy.map((name) => (
-              <span key={name} className="text-lg font-semibold text-muted-foreground/50 tracking-wide">{name}</span>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="py-24" style={{ background: 'linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(220 50% 11%) 100%)' }}>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Users, Briefcase, Zap, Shield, Globe, Sparkles, ChevronRight } from "lucide-react";
+import { ArrowRight, Users, Briefcase, Zap, Shield, Globe, Sparkles, Code2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import heroImage from "@/assets/hero-tech-landscape.png";
@@ -42,17 +42,16 @@ const trustedBy = ["Google", "Meta", "Paystack", "Flutterwave", "Andela"];
 export default function Landing() {
   return (
     <Layout showMobileNav={false}>
-      {/* Hero Section - Spline-inspired split layout */}
+      {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden">
-        {/* Full-screen background image */}
-        <div className="absolute inset-0">
+        {/* Desktop: Full-screen background image */}
+        <div className="absolute inset-0 hidden md:block">
           <img
             src={heroImage}
             alt="Tech professionals collaborating"
             className="w-full h-full object-cover"
             loading="eager"
           />
-          {/* Gradient blur overlay */}
           <div className="absolute inset-0" style={{
             background: 'linear-gradient(to right, hsl(222 47% 11% / 0.95) 0%, hsl(222 47% 11% / 0.85) 35%, hsl(222 47% 11% / 0.5) 65%, hsl(222 47% 11% / 0.3) 100%)'
           }} />
@@ -65,16 +64,23 @@ export default function Landing() {
           }} />
         </div>
 
-        {/* Ambient glow */}
-        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.15),_transparent_60%)]" />
+        {/* Mobile: Simple dark background with glow */}
+        <div className="absolute inset-0 md:hidden" style={{
+          background: 'linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(220 50% 8%) 100%)'
+        }}>
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[radial-gradient(ellipse_at_center,_hsl(217_91%_53%_/_0.12),_transparent_70%)]" />
+        </div>
 
-        <div className="container relative z-10 px-6 sm:px-8 lg:px-12 py-20 md:py-0">
+        {/* Ambient glow - desktop only */}
+        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,_hsl(217_91%_53%_/_0.15),_transparent_60%)] hidden md:block" />
+
+        {/* Desktop layout */}
+        <div className="container relative z-10 px-6 sm:px-8 lg:px-12 py-20 md:py-0 hidden md:block">
           <div className="max-w-2xl min-h-[85vh] flex flex-col justify-center">
             <div className="animate-slide-up space-y-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-sm font-medium text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
                 Nigeria's Premier Tech Talent Network
-                <ChevronRight className="h-3.5 w-3.5" />
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
@@ -113,6 +119,59 @@ export default function Landing() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{stat.label}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile layout - centered, simple like reference */}
+        <div className="container relative z-10 px-6 md:hidden">
+          <div className="min-h-[100vh] flex flex-col items-center justify-center text-center">
+            <div className="animate-slide-up space-y-8 w-full max-w-sm">
+              {/* Logo icon */}
+              <div className="flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-glow">
+                  <Zap className="h-8 w-8 text-primary-foreground" />
+                </div>
+              </div>
+
+              {/* Title */}
+              <h1 className="text-3xl font-bold text-foreground leading-tight">
+                TechBros <span className="text-gradient">Network</span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-base text-muted-foreground leading-relaxed px-2">
+                The exclusive hub where tech elite showcase skills and startups discover magic.
+              </p>
+
+              {/* Feature cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-border/50 p-4 flex flex-col items-center gap-2" style={{ background: 'hsl(220 41% 14% / 0.6)' }}>
+                  <Code2 className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Portfolios</span>
+                  <span className="text-xs text-muted-foreground text-center">High-impact profile generation</span>
+                </div>
+                <div className="rounded-2xl border border-border/50 p-4 flex flex-col items-center gap-2" style={{ background: 'hsl(220 41% 14% / 0.6)' }}>
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Verified</span>
+                  <span className="text-xs text-muted-foreground text-center">Vetted tech talent pool</span>
+                </div>
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col gap-3 w-full pt-2">
+                <Link to="/signup" className="w-full">
+                  <Button variant="accent" size="lg" className="w-full group rounded-xl">
+                    Get Started
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/login" className="w-full">
+                  <Button variant="heroOutline" size="lg" className="w-full rounded-xl">
+                    Sign In
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

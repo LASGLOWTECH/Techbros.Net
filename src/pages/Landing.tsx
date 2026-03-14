@@ -213,31 +213,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(220 50% 10%) 100%)' }}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-primary/40 via-transparent to-transparent" />
-        
-        <div className="container relative z-10 px-4 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
-            Join thousands of tech professionals already using TechBros Network to grow their careers.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/explore">
-              <Button variant="accent" size="lg">
-                Explore Talents
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="heroOutline" size="lg">
-                Create Account
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="py-12 border-t border-border/30" style={{ background: 'hsl(222 47% 6%)' }}>

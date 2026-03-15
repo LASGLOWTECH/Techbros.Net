@@ -97,7 +97,7 @@ export default function FreelancerDashboard() {
             <h3 className="font-semibold mb-1">Edit Profile</h3>
             <p className="text-sm text-muted-foreground">Update your info and skills</p>
           </Link>
-          <Link to={`/talent/${user?.id}`} className="rounded-xl border border-border p-5 hover:shadow-lg hover:border-primary/30 transition-all bg-card">
+          <Link to={freelancerProfile?.slug ? `/talent/${freelancerProfile.slug}` : `/talent/${user?.id}`} className="rounded-xl border border-border p-5 hover:shadow-lg hover:border-primary/30 transition-all bg-card">
             <Eye className="h-6 w-6 text-primary mb-3" />
             <h3 className="font-semibold mb-1">Preview Profile</h3>
             <p className="text-sm text-muted-foreground">See how clients view you</p>

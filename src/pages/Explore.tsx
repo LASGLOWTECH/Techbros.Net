@@ -55,6 +55,7 @@ export default function Explore() {
         location,
         project_link,
         portfolio_images,
+        slug,
         is_public,
         profiles (
           full_name,
@@ -80,6 +81,7 @@ export default function Explore() {
       location: item.location,
       project_link: item.project_link,
       portfolio_images: item.portfolio_images || [],
+      slug: item.slug,
       is_public: item.is_public,
     }));
 

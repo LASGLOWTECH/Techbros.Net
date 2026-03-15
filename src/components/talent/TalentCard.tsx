@@ -32,6 +32,7 @@ export function TalentCard({ talent, isBookmarked, onBookmark, showBookmark }: T
     .join("")
     .toUpperCase()
     .slice(0, 2);
+  const profilePath = talent.slug ? `/talent/${talent.slug}` : `/talent/${talent.user_id}`;
 
   return (
     <div className="group relative rounded-xl border border-white/10 shadow-card card-hover overflow-hidden" style={{ background: 'hsl(220 41% 14%)' }}>
@@ -132,7 +133,7 @@ export function TalentCard({ talent, isBookmarked, onBookmark, showBookmark }: T
 
         {/* Actions */}
         <div className="mt-4 flex gap-2">
-          <Link to={`/talent/${talent.user_id}`} className="flex-1">
+          <Link to={profilePath} className="flex-1">
             <Button variant="default" size="sm" className="w-full">
               View Profile
             </Button>

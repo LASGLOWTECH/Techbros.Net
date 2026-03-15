@@ -159,50 +159,101 @@ export type Database = {
       }
       freelancer_profiles: {
         Row: {
+          about_long: string | null
           availability:
             | Database["public"]["Enums"]["availability_status"]
             | null
+          awards: Json
           bio: string | null
+          certifications: Json
+          contact_email: string | null
+          contact_location: string | null
+          contact_phone: string | null
+          contact_whatsapp: string | null
           created_at: string
+          cv_url: string | null
+          experiences: Json
+          hero_intro: string | null
+          hero_subtitle: string | null
+          hero_tagline: string | null
           id: string
           is_public: boolean | null
           location: string | null
           portfolio_images: string[] | null
           project_link: string | null
+          projects: Json
           role_title: string | null
+          services: Json
+          slug: string | null
+          skill_summary: string | null
           skills: string[] | null
+          social_links: Json
           updated_at: string
           user_id: string
         }
         Insert: {
+          about_long?: string | null
           availability?:
             | Database["public"]["Enums"]["availability_status"]
             | null
+          awards?: Json
           bio?: string | null
+          certifications?: Json
+          contact_email?: string | null
+          contact_location?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
+          cv_url?: string | null
+          experiences?: Json
+          hero_intro?: string | null
+          hero_subtitle?: string | null
+          hero_tagline?: string | null
           id?: string
           is_public?: boolean | null
           location?: string | null
           portfolio_images?: string[] | null
           project_link?: string | null
+          projects?: Json
           role_title?: string | null
+          services?: Json
+          slug?: string | null
+          skill_summary?: string | null
           skills?: string[] | null
+          social_links?: Json
           updated_at?: string
           user_id: string
         }
         Update: {
+          about_long?: string | null
           availability?:
             | Database["public"]["Enums"]["availability_status"]
             | null
+          awards?: Json
           bio?: string | null
+          certifications?: Json
+          contact_email?: string | null
+          contact_location?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
+          cv_url?: string | null
+          experiences?: Json
+          hero_intro?: string | null
+          hero_subtitle?: string | null
+          hero_tagline?: string | null
           id?: string
           is_public?: boolean | null
           location?: string | null
           portfolio_images?: string[] | null
           project_link?: string | null
+          projects?: Json
           role_title?: string | null
+          services?: Json
+          slug?: string | null
+          skill_summary?: string | null
           skills?: string[] | null
+          social_links?: Json
           updated_at?: string
           user_id?: string
         }

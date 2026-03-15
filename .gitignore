@@ -7,10 +7,19 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Supabase
+supabase/.temp
+
 node_modules
 dist
 dist-ssr
-*.local
+.local
 
 # Editor directories and files
 .vscode/*

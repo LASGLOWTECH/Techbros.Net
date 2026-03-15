@@ -9,7 +9,7 @@ import JobDetails from "@/pages/JobDetails";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Landing from "./pages/Landing";
 import Login from "./pages/auth/Login";
@@ -23,6 +23,17 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+function CatchAllNotFound() {
+  const { pathname } = useLocation();
+  const raw = pathname || (typeof window !== "undefined" ? window.location.pathname : "");
+  const decoded = decodeURIComponent(raw).trim();
+  const atMatch = decoded.match(/^\/?@\/?([^/]+)/);
+  const profileMatch = decoded.match(/^\/profile\/([^/]+)/);
+  const slug = atMatch?.[1]?.trim() || profileMatch?.[1]?.trim();
+  if (slug) return <Navigate to={`/talent/${slug}`} replace />;
+  return <NotFound />;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -39,7 +50,7 @@ const App = () => (
             <Route path="/explore" element={<Explore />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/jobs/:jobId" element={<JobDetails />} />
-            <Route path="/talent/:userId" element={<TalentProfile />} />
+            <Route path="/talent/:id" element={<TalentProfile />} />
             <Route path="/freelancer" element={<FreelancerDashboard />} />
             <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />
             <Route path="/freelancer/profile" element={<EditProfile />} />
@@ -55,7 +66,7 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/jobs/new" element={<JobForm />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<CatchAllNotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

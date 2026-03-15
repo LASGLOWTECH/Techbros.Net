@@ -33,13 +33,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) {
           // Fetch user role
           setTimeout(async () => {
-            const { data } = await supabase
+            const { data, error } = await supabase
               .from("user_roles")
               .select("role")
               .eq("user_id", session.user.id)
-              .single();
-            
-            setUserRole(data?.role as UserRole ?? null);
+              .maybeSingle();
+
+            if (error) {
+              setUserRole(null);
+              return;
+            }
+
+            setUserRole((data?.role as UserRole) ?? null);
           }, 0);
         } else {
           setUserRole(null);
@@ -59,9 +64,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .from("user_roles")
           .select("role")
           .eq("user_id", session.user.id)
-          .single()
-          .then(({ data }) => {
-            setUserRole(data?.role as UserRole ?? null);
+          .maybeSingle()
+          .then(({ data, error }) => {
+            setUserRole(error ? null : (data?.role as UserRole) ?? null);
             setLoading(false);
           });
       } else {
@@ -79,39 +84,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
         options: {
           emailRedirectTo: window.location.origin,
+          data: {
+            full_name: fullName,
+            role,
+          },
         },
       });
 
       if (error) throw error;
 
       if (data.user) {
-        // Create user role
-        const { error: roleError } = await supabase
-          .from("user_roles")
-          .insert({ user_id: data.user.id, role });
-
-        if (roleError) throw roleError;
-
-        // Create profile
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert({
-            user_id: data.user.id,
-            full_name: fullName,
-            email,
-          });
-
-        if (profileError) throw profileError;
-
-        // If freelancer, create freelancer profile
-        if (role === "freelancer") {
-          const { error: freelancerError } = await supabase
-            .from("freelancer_profiles")
-            .insert({ user_id: data.user.id });
-
-          if (freelancerError) throw freelancerError;
-        }
-
         setUserRole(role);
       }
 

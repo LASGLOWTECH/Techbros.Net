@@ -177,7 +177,7 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <img src={logo} alt="TechBros Network" className="h-8 w-8 rounded-lg" />
-              <span className="font-bold text-foreground">TechBros Network</span>
+              <span className="font-bold text-foreground">TechBros Network v 1.0 </span>
             </div>
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} TechBros Network. All rights reserved.

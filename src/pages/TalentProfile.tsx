@@ -62,6 +62,13 @@ export default function TalentProfile() {
 
   const isUuid = (value: string) =>
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  const slugToDisplayName = (slug?: string | null) => {
+    if (!slug) return null;
+    const trimmed = slug.replace(/-[0-9a-f]{6}(?:-\d+)?$/i, "");
+    const parts = trimmed.split("-").filter(Boolean);
+    if (parts.length === 0) return null;
+    return parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+  };
 
   const fetchTalent = async () => {
     const lookupKey = id?.trim();
@@ -128,11 +135,13 @@ export default function TalentProfile() {
       return;
     }
 
+    const profileRow = (data.profiles as any) || null;
+    const fallbackName = slugToDisplayName(data.slug || (isUuid(lookupKey) ? null : lookupKey));
     const formatted: FreelancerWithProfile = {
       user_id: data.user_id,
-      full_name: (data.profiles as any).full_name,
-      email: (data.profiles as any).email,
-      avatar_url: (data.profiles as any).avatar_url,
+      full_name: profileRow?.full_name || fallbackName || "Freelancer",
+      email: profileRow?.email || null,
+      avatar_url: profileRow?.avatar_url || null,
       role_title: data.role_title,
       bio: data.bio,
       about_long: data.about_long,

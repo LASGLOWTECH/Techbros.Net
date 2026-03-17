@@ -38,6 +38,14 @@ export default function Explore() {
   const { user, userRole } = useAuth();
   const { toast } = useToast();
 
+  const slugToDisplayName = (slug?: string | null) => {
+    if (!slug) return null;
+    const trimmed = slug.replace(/-[0-9a-f]{6}(?:-\d+)?$/i, "");
+    const parts = trimmed.split("-").filter(Boolean);
+    if (parts.length === 0) return null;
+    return parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+  };
+
   useEffect(() => {
     fetchTalents();
     if (user) fetchBookmarks();
@@ -70,20 +78,24 @@ export default function Explore() {
       return;
     }
 
-    const formattedTalents: FreelancerWithProfile[] = (data || []).map((item: any) => ({
-      user_id: item.user_id,
-      full_name: item.profiles.full_name,
-      avatar_url: item.profiles.avatar_url,
-      role_title: item.role_title,
-      bio: item.bio,
-      skills: item.skills || [],
-      availability: item.availability || "available",
-      location: item.location,
-      project_link: item.project_link,
-      portfolio_images: item.portfolio_images || [],
-      slug: item.slug,
-      is_public: item.is_public,
-    }));
+    const formattedTalents: FreelancerWithProfile[] = (data || []).map((item: any) => {
+      const profileRow = item.profiles || null;
+      const fallbackName = slugToDisplayName(item.slug) || "Freelancer";
+      return {
+        user_id: item.user_id,
+        full_name: profileRow?.full_name || fallbackName,
+        avatar_url: profileRow?.avatar_url || null,
+        role_title: item.role_title,
+        bio: item.bio,
+        skills: item.skills || [],
+        availability: item.availability || "available",
+        location: item.location,
+        project_link: item.project_link,
+        portfolio_images: item.portfolio_images || [],
+        slug: item.slug,
+        is_public: item.is_public,
+      };
+    });
 
     setTalents(formattedTalents);
     setLoading(false);

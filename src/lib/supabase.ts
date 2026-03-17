@@ -51,7 +51,7 @@ export interface JobWithClient {
   role: string;
   description: string;
   location_type: JobLocationType;
-  contact_email: string;
+  contact_email?: string | null;
   is_active: boolean;
   created_at: string;
   client_profiles: {

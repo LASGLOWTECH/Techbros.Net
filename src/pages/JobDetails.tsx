@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Layout } from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import type { JobWithClient, JobLocationType } from "@/lib/supabase";
 
 const locationLabels: Record<JobLocationType, string> = {
@@ -25,30 +26,32 @@ export default function JobDetails() {
   const navigate = useNavigate();
   const [job, setJob] = useState<JobWithClient | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (jobId) fetchJob();
-  }, [jobId]);
+  }, [jobId, user?.id]);
 
   const fetchJob = async () => {
+    const baseSelect = `
+      id,
+      title,
+      role,
+      description,
+      location_type,
+      is_active,
+      created_at,
+      client_profiles!inner (
+        id,
+        company_name,
+        cover_image_url,
+        about
+      )
+    `;
+    const select = user ? `${baseSelect}, contact_email` : baseSelect;
     const { data, error } = await supabase
       .from("jobs")
-      .select(`
-        id,
-        title,
-        role,
-        description,
-        location_type,
-        contact_email,
-        is_active,
-        created_at,
-        client_profiles!inner (
-          id,
-          company_name,
-          cover_image_url,
-          about
-        )
-      `)
+      .select(select)
       .eq("id", jobId)
       .eq("is_active", true)
       .maybeSingle();
@@ -60,7 +63,7 @@ export default function JobDetails() {
   };
 
   const getMailtoUrl = () => {
-    if (!job) return "#";
+    if (!job?.contact_email) return "#";
     const subject = encodeURIComponent(`Application for ${job.title}`);
     const body = encodeURIComponent(
       `Hi,\n\nI am interested in the ${job.title} position at ${job.client_profiles.company_name || "your company"}.\n\n[Please attach your CV/resume and any relevant portfolio links]\n\nBest regards`
@@ -144,12 +147,20 @@ export default function JobDetails() {
         </div>
 
         {/* Apply Button */}
-        <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
-          <Button size="lg" className="w-full sm:w-auto mb-8">
-            <Mail className="h-4 w-4 mr-2" />
-            Apply via Email
-          </Button>
-        </a>
+        {user ? (
+          <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="w-full sm:w-auto mb-8" disabled={!job.contact_email}>
+              <Mail className="h-4 w-4 mr-2" />
+              Apply via Email
+            </Button>
+          </a>
+        ) : (
+          <div className="mb-8">
+            <Button size="lg" className="w-full sm:w-auto" onClick={() => navigate("/login")}>
+              Sign in to Apply
+            </Button>
+          </div>
+        )}
 
         <Separator className="my-8" />
 
@@ -166,17 +177,33 @@ export default function JobDetails() {
         </Card>
 
         {/* Contact Email */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Contact</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <a href={`mailto:${job.contact_email}`} className="flex items-center gap-2 text-primary hover:underline">
-              <Mail className="h-4 w-4" />
-              {job.contact_email}
-            </a>
-          </CardContent>
-        </Card>
+        {user ? (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Contact</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {job.contact_email ? (
+                <a href={`mailto:${job.contact_email}`} className="flex items-center gap-2 text-primary hover:underline">
+                  <Mail className="h-4 w-4" />
+                  {job.contact_email}
+                </a>
+              ) : (
+                <p className="text-muted-foreground">Contact email is not available.</p>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Contact</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-3">Sign in to view contact details and apply.</p>
+              <Button onClick={() => navigate("/login")}>Sign in</Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Company Info */}
         {job.client_profiles.about && (
@@ -196,14 +223,20 @@ export default function JobDetails() {
         <div className="mt-8 p-6 rounded-xl border border-border bg-card text-center">
           <h3 className="font-semibold text-lg mb-2">Interested in this role?</h3>
           <p className="text-muted-foreground mb-4">
-            Send your application to get started
+            {user ? "Send your application to get started" : "Sign in to apply for this job"}
           </p>
-          <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
-            <Button size="lg">
-              <Mail className="h-4 w-4 mr-2" />
-              Apply via Email
+          {user ? (
+            <a href={getMailtoUrl()} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" disabled={!job.contact_email}>
+                <Mail className="h-4 w-4 mr-2" />
+                Apply via Email
+              </Button>
+            </a>
+          ) : (
+            <Button size="lg" onClick={() => navigate("/login")}>
+              Sign in to Apply
             </Button>
-          </a>
+          )}
         </div>
       </div>
     </Layout>

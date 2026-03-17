@@ -45,7 +45,6 @@ export default function Jobs() {
         role,
         description,
         location_type,
-        contact_email,
         is_active,
         created_at,
         client_profiles!inner (

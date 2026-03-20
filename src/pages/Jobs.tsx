@@ -94,7 +94,7 @@ export default function Jobs() {
 
   return (
     <Layout>
-      <div className="container px-4 py-8">
+      <div className="container px-4 md:px-24 md:py-16 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Job Opportunities</h1>

@@ -138,7 +138,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24" style={{ background: 'linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(220 50% 11%) 100%)' }}>
+      <section className="py-24 md:px-24 px-6" style={{ background: 'linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(220 50% 11%) 100%)' }}>
         <div className="container px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">

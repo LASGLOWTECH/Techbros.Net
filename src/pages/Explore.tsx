@@ -189,7 +189,7 @@ export default function Explore() {
 
   return (
     <Layout>
-      <div className="container px-4 py-8">
+      <div className="container px-4 md:px-24 mx-auto py-16">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
@@ -291,9 +291,9 @@ export default function Explore() {
 
         {/* Results */}
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
-              <div
+              <divs
                 key={i}
                 className="h-80 rounded-xl bg-muted animate-pulse"
               />
@@ -317,7 +317,7 @@ export default function Explore() {
             <p className="text-sm text-muted-foreground mb-4">
               Showing {filteredTalents.length} talent{filteredTalents.length !== 1 ? "s" : ""}
             </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {filteredTalents.map((talent) => (
                 <TalentCard
                   key={talent.user_id}

@@ -157,6 +157,36 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          message: string
+          subject: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          message: string
+          subject?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          message?: string
+          subject?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       freelancer_profiles: {
         Row: {
           about_long: string | null
@@ -269,37 +299,58 @@ export type Database = {
       }
       jobs: {
         Row: {
-          client_id: string
+          application_deadline: string | null
+          application_email_subject: string | null
+          client_id: string | null
           contact_email: string
           created_at: string
           description: string
+          how_to_apply: string | null
           id: string
           is_active: boolean
+          location_detail: string | null
           location_type: Database["public"]["Enums"]["job_location_type"]
+          posted_company_name: string | null
+          qualifications: string | null
+          reports_to: string | null
           role: string
           title: string
           updated_at: string
         }
         Insert: {
-          client_id: string
+          application_deadline?: string | null
+          application_email_subject?: string | null
+          client_id?: string | null
           contact_email: string
           created_at?: string
           description: string
+          how_to_apply?: string | null
           id?: string
           is_active?: boolean
+          location_detail?: string | null
           location_type?: Database["public"]["Enums"]["job_location_type"]
+          posted_company_name?: string | null
+          qualifications?: string | null
+          reports_to?: string | null
           role: string
           title: string
           updated_at?: string
         }
         Update: {
-          client_id?: string
+          application_deadline?: string | null
+          application_email_subject?: string | null
+          client_id?: string | null
           contact_email?: string
           created_at?: string
           description?: string
+          how_to_apply?: string | null
           id?: string
           is_active?: boolean
+          location_detail?: string | null
           location_type?: Database["public"]["Enums"]["job_location_type"]
+          posted_company_name?: string | null
+          qualifications?: string | null
+          reports_to?: string | null
           role?: string
           title?: string
           updated_at?: string
@@ -313,6 +364,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

@@ -51,13 +51,45 @@ export interface JobWithClient {
   role: string;
   description: string;
   location_type: JobLocationType;
+  location_detail?: string | null;
+  reports_to?: string | null;
+  application_deadline?: string | null;
+  qualifications?: string | null;
+  how_to_apply?: string | null;
+  application_email_subject?: string | null;
   contact_email?: string | null;
   is_active: boolean;
   created_at: string;
+  posted_company_name?: string | null;
   client_profiles: {
     id: string;
     company_name: string | null;
     cover_image_url: string | null;
     about: string | null;
+  } | null;
+}
+
+export function jobLocationLine(job: {
+  location_type: JobLocationType;
+  location_detail?: string | null;
+}): string {
+  const labels: Record<JobLocationType, string> = {
+    remote: "Remote",
+    hybrid: "Hybrid",
+    onsite: "On-site",
   };
+  const base = labels[job.location_type];
+  const detail = job.location_detail?.trim();
+  return detail ? `${base} · ${detail}` : base;
+}
+
+export function jobDisplayCompanyName(job: {
+  posted_company_name?: string | null;
+  client_profiles?: { company_name?: string | null } | null;
+}): string {
+  const posted = job.posted_company_name?.trim();
+  if (posted) return posted;
+  const fromProfile = job.client_profiles?.company_name?.trim();
+  if (fromProfile) return fromProfile;
+  return "Company";
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { jobLocationLine, type JobLocationType } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Trash2, Eye, EyeOff, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,10 +32,12 @@ interface JobWithCompany {
   title: string;
   role: string;
   location_type: string;
+  location_detail: string | null;
   is_active: boolean;
   created_at: string;
   contact_email: string;
   company_name: string | null;
+  application_deadline: string | null;
 }
 
 interface JobsTableProps {
@@ -60,25 +63,32 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
           title,
           role,
           location_type,
+          location_detail,
           is_active,
           created_at,
           contact_email,
-          client_profiles!inner(company_name)
+          application_deadline,
+          posted_company_name,
+          client_profiles(company_name)
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
-      const formattedJobs: JobWithCompany[] = data?.map(job => ({
-        id: job.id,
-        title: job.title,
-        role: job.role,
-        location_type: job.location_type,
-        is_active: job.is_active,
-        created_at: job.created_at,
-        contact_email: job.contact_email,
-        company_name: job.client_profiles?.company_name || null,
-      })) || [];
+      const formattedJobs: JobWithCompany[] = data?.map((job) => {
+        const posted = job.posted_company_name?.trim();
+        const fromProfile = job.client_profiles?.company_name?.trim();
+        return {
+          id: job.id,
+          title: job.title,
+          role: job.role,
+          location_type: job.location_type,
+          is_active: job.is_active,
+          created_at: job.created_at,
+          contact_email: job.contact_email,
+          company_name: posted || fromProfile || null,
+        };
+      }) || [];
 
       setJobs(formattedJobs);
     } catch (error) {
@@ -167,19 +177,6 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
     }
   };
 
-  const getLocationBadge = (locationType: string) => {
-    switch (locationType) {
-      case "remote":
-        return <Badge variant="secondary">Remote</Badge>;
-      case "hybrid":
-        return <Badge variant="outline">Hybrid</Badge>;
-      case "onsite":
-        return <Badge>On-site</Badge>;
-      default:
-        return <Badge variant="outline">{locationType}</Badge>;
-    }
-  };
-
   if (loading) {
     return (
       <Card>
@@ -210,6 +207,7 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
                 <TableHead>Company</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Location</TableHead>
+                <TableHead>Closes</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Posted</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -221,7 +219,17 @@ export default function JobsTable({ onRefresh }: JobsTableProps) {
                   <TableCell className="font-medium">{job.title}</TableCell>
                   <TableCell>{job.company_name || "Unknown"}</TableCell>
                   <TableCell>{job.role}</TableCell>
-                  <TableCell>{getLocationBadge(job.location_type)}</TableCell>
+                  <TableCell className="max-w-[140px] text-sm text-muted-foreground">
+                    {jobLocationLine({
+                      location_type: job.location_type as JobLocationType,
+                      location_detail: job.location_detail,
+                    })}
+                  </TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">
+                    {job.application_deadline
+                      ? new Date(job.application_deadline + "T12:00:00").toLocaleDateString()
+                      : "—"}
+                  </TableCell>
                   <TableCell>
                     {job.is_active ? (
                       <Badge variant="default">Active</Badge>

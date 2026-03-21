@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Users, Briefcase, Shield, Globe, Sparkles, Code2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
+import { NewsletterSubscribe } from "@/components/marketing/NewsletterSubscribe";
 import logo from "@/assets/logo.png";
 
 const features = [
@@ -171,15 +172,31 @@ export default function Landing() {
         </div>
       </section>
 
+      <NewsletterSubscribe />
+
       {/* Footer */}
       <footer className="py-12 border-t border-border/30" style={{ background: 'hsl(222 47% 6%)' }}>
         <div className="container px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
               <img src={logo} alt="TechBros Network" className="h-8 w-8 rounded-lg" />
               <span className="font-bold text-foreground">TechBros Network v 1.0 </span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+              <Link to="/explore" className="text-muted-foreground hover:text-foreground transition-colors">
+                Explore
+              </Link>
+              <Link to="/jobs" className="text-muted-foreground hover:text-foreground transition-colors">
+                Jobs
+              </Link>
+              <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                Contact
+              </Link>
+              <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors">
+                Log in
+              </Link>
+            </nav>
+            <p className="text-sm text-muted-foreground text-center md:text-right">
               © {new Date().getFullYear()} TechBros Network. All rights reserved.
             </p>
           </div>

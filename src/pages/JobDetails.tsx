@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader2, ArrowLeft, MapPin, Building2, Mail, Globe, Calendar } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, Building2, Mail, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,13 +13,11 @@ import { Separator } from "@/components/ui/separator";
 import { Layout } from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import type { JobWithClient, JobLocationType } from "@/lib/supabase";
-
-const locationLabels: Record<JobLocationType, string> = {
-  remote: "Remote",
-  hybrid: "Hybrid",
-  onsite: "On-site",
-};
+import {
+  jobDisplayCompanyName,
+  jobLocationLine,
+  type JobWithClient,
+} from "@/lib/supabase";
 
 export default function JobDetails() {
   const { jobId } = useParams();
@@ -39,9 +37,16 @@ export default function JobDetails() {
       role,
       description,
       location_type,
+      location_detail,
+      reports_to,
+      application_deadline,
+      qualifications,
+      how_to_apply,
+      application_email_subject,
       is_active,
       created_at,
-      client_profiles!inner (
+      posted_company_name,
+      client_profiles (
         id,
         company_name,
         cover_image_url,
@@ -64,9 +69,11 @@ export default function JobDetails() {
 
   const getMailtoUrl = () => {
     if (!job?.contact_email) return "#";
-    const subject = encodeURIComponent(`Application for ${job.title}`);
+    const subjectLine =
+      job.application_email_subject?.trim() || job.title;
+    const subject = encodeURIComponent(subjectLine);
     const body = encodeURIComponent(
-      `Hi,\n\nI am interested in the ${job.title} position at ${job.client_profiles.company_name || "your company"}.\n\n[Please attach your CV/resume and any relevant portfolio links]\n\nBest regards`
+      `Hi,\n\nI am interested in the ${job.title} position at ${jobDisplayCompanyName(job)}.\n\n[Please attach your CV/resume and any relevant portfolio links]\n\nBest regards`
     );
     return `mailto:${job.contact_email}?subject=${subject}&body=${body}`;
   };
@@ -105,6 +112,14 @@ export default function JobDetails() {
     day: "numeric",
   });
 
+  const closingDate = job.application_deadline
+    ? new Date(job.application_deadline + "T12:00:00").toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
+
   return (
     <Layout>
       <div className="container px-4 py-8 max-w-3xl">
@@ -114,11 +129,11 @@ export default function JobDetails() {
         </Button>
 
         {/* Cover Image */}
-        {job.client_profiles.cover_image_url && (
+        {job.client_profiles?.cover_image_url && (
           <div className="mb-6 rounded-xl overflow-hidden">
             <img
               src={job.client_profiles.cover_image_url}
-              alt={job.client_profiles.company_name || "Company"}
+              alt={jobDisplayCompanyName(job)}
               className="w-full h-48 object-cover"
             />
           </div>
@@ -129,7 +144,7 @@ export default function JobDetails() {
           <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
           <div className="flex items-center gap-2 text-lg text-muted-foreground mb-4">
             <Building2 className="h-5 w-5" />
-            <span>{job.client_profiles.company_name || "Company"}</span>
+            <span>{jobDisplayCompanyName(job)}</span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <Badge variant="secondary" className="text-sm">
@@ -137,12 +152,23 @@ export default function JobDetails() {
             </Badge>
             <span className="flex items-center gap-1 text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              {locationLabels[job.location_type]}
+              {jobLocationLine(job)}
             </span>
+            {job.reports_to?.trim() && (
+              <span className="text-sm text-muted-foreground">
+                Reports to: <span className="text-foreground/90">{job.reports_to.trim()}</span>
+              </span>
+            )}
             <span className="flex items-center gap-1 text-muted-foreground">
               <Calendar className="h-4 w-4" />
               Posted {postedDate}
             </span>
+            {closingDate && (
+              <span className="flex items-center gap-1 text-amber-500/90 text-sm font-medium">
+                <Calendar className="h-4 w-4" />
+                Closes {closingDate}
+              </span>
+            )}
           </div>
         </div>
 
@@ -164,10 +190,10 @@ export default function JobDetails() {
 
         <Separator className="my-8" />
 
-        {/* Job Description */}
+        {/* About the role */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Job Description</CardTitle>
+            <CardTitle>About the role</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="prose prose-invert max-w-none">
@@ -175,6 +201,28 @@ export default function JobDetails() {
             </div>
           </CardContent>
         </Card>
+
+        {job.qualifications?.trim() && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Qualifications &amp; requirements</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="whitespace-pre-wrap text-foreground/90">{job.qualifications.trim()}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {job.how_to_apply?.trim() && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>How to apply</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="whitespace-pre-wrap text-foreground/90">{job.how_to_apply.trim()}</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Contact Email */}
         {user ? (
@@ -206,10 +254,10 @@ export default function JobDetails() {
         )}
 
         {/* Company Info */}
-        {job.client_profiles.about && (
+        {job.client_profiles?.about && (
           <Card>
             <CardHeader>
-              <CardTitle>About {job.client_profiles.company_name || "the Company"}</CardTitle>
+              <CardTitle>About {jobDisplayCompanyName(job)}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-foreground/90 whitespace-pre-wrap">

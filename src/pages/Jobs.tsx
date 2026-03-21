@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, Briefcase, MapPin, Building2, Search, X, SlidersHorizontal } from "lucide-react";
+import { Loader2, Briefcase, MapPin, Building2, Search, X, SlidersHorizontal, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Layout } from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import type { JobWithClient, JobLocationType } from "@/lib/supabase";
+import {
+  jobDisplayCompanyName,
+  jobLocationLine,
+  type JobWithClient,
+  type JobLocationType,
+} from "@/lib/supabase";
 
 const locationLabels: Record<JobLocationType, string> = {
   remote: "Remote",
@@ -45,9 +50,12 @@ export default function Jobs() {
         role,
         description,
         location_type,
+        location_detail,
+        application_deadline,
         is_active,
         created_at,
-        client_profiles!inner (
+        posted_company_name,
+        client_profiles (
           id,
           company_name,
           cover_image_url,
@@ -81,7 +89,8 @@ export default function Jobs() {
       searchQuery === "" ||
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.client_profiles.company_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      jobDisplayCompanyName(job).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.location_detail?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesLocation =
       selectedLocations.length === 0 ||
@@ -208,10 +217,10 @@ export default function Jobs() {
                     <div className="flex gap-4">
                       {/* Company Cover/Logo */}
                       <div className="shrink-0">
-                        {job.client_profiles.cover_image_url ? (
+                        {job.client_profiles?.cover_image_url ? (
                           <img
                             src={job.client_profiles.cover_image_url}
-                            alt={job.client_profiles.company_name || "Company"}
+                            alt={jobDisplayCompanyName(job)}
                             className="h-16 w-16 rounded-lg object-cover"
                           />
                         ) : (
@@ -225,14 +234,24 @@ export default function Jobs() {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-lg truncate">{job.title}</h3>
                         <p className="text-muted-foreground mb-2">
-                          {job.client_profiles.company_name || "Company"}
+                          {jobDisplayCompanyName(job)}
                         </p>
                         <div className="flex flex-wrap items-center gap-3 text-sm">
                           <Badge variant="secondary">{job.role}</Badge>
                           <span className="flex items-center gap-1 text-muted-foreground">
                             <MapPin className="h-4 w-4" />
-                            {locationLabels[job.location_type]}
+                            {jobLocationLine(job)}
                           </span>
+                          {job.application_deadline && (
+                            <span className="flex items-center gap-1 text-amber-600/90 dark:text-amber-500/90">
+                              <Calendar className="h-4 w-4" />
+                              Closes{" "}
+                              {new Date(job.application_deadline + "T12:00:00").toLocaleDateString(
+                                "en-US",
+                                { month: "short", day: "numeric", year: "numeric" }
+                              )}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>

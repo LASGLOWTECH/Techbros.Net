@@ -21,6 +21,7 @@ import FreelancerDashboard from "./pages/freelancer/Dashboard";
 import ClientDashboard from "./pages/client/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/explore" element={<Explore />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/jobs/:jobId" element={<JobDetails />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/talent/:id" element={<TalentProfile />} />
             <Route path="/freelancer" element={<FreelancerDashboard />} />
             <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />

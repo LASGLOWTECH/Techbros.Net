@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, LogOut, User, LayoutDashboard, Briefcase, Shield } from "lucide-react";
+import { Menu, X, LogOut, User, LayoutDashboard, Briefcase, Shield, Mail } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -57,7 +57,14 @@ export function Navbar() {
             >
               Jobs
             </Link>
-            
+            <Link
+              to="/contact"
+              className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors hover:text-foreground ${
+                isActive("/contact") ? "text-foreground bg-secondary/50" : "text-muted-foreground"
+              }`}
+            >
+              Contact
+            </Link>
             {user && userRole === "admin" && (
               <Link
                 to="/admin/dashboard"
@@ -137,7 +144,14 @@ export function Navbar() {
                 <Briefcase className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Jobs</span>
               </Link>
-              
+              <Link
+                to="/contact"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Contact</span>
+              </Link>
               {user ? (
                 <>
                   {userRole === "admin" && (

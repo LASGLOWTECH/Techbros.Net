@@ -36,13 +36,35 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import type { JobLocationType } from "@/lib/supabase";
 
-const jobSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(100),
-  role: z.string().min(2, "Role must be at least 2 characters").max(100),
-  description: z.string().min(20, "Description must be at least 20 characters").max(5000),
-  location_type: z.enum(["remote", "hybrid", "onsite"]),
-  contact_email: z.string().email("Please enter a valid email address"),
-});
+/** Escape % and _ for PostgREST ilike exact match on user-provided company names */
+function escapeIlikeExact(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
+}
+
+const jobSchema = z
+  .object({
+    title: z.string().min(3, "Title must be at least 3 characters").max(150),
+    role: z.string().min(2, "Role must be at least 2 characters").max(100),
+    description: z
+      .string()
+      .min(20, "Overview must be at least 20 characters")
+      .max(15000, "Overview is too long"),
+    location_type: z.enum(["remote", "hybrid", "onsite"]),
+    location_detail: z.string().max(500).optional().default(""),
+    reports_to: z.string().max(300).optional().default(""),
+    application_deadline: z.string().max(32).optional().default(""),
+    qualifications: z.string().max(15000).optional().default(""),
+    how_to_apply: z.string().max(8000).optional().default(""),
+    application_email_subject: z.string().max(250).optional().default(""),
+    contact_email: z.string().email("Please enter a valid email address"),
+    company_name: z.string().optional(),
+  })
+  .refine(
+    (d) =>
+      !d.application_deadline?.trim() ||
+      /^\d{4}-\d{2}-\d{2}$/.test(d.application_deadline.trim()),
+    { message: "Use a valid closing date", path: ["application_deadline"] }
+  );
 
 type JobFormData = z.infer<typeof jobSchema>;
 
@@ -56,7 +78,6 @@ export default function JobForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [clientProfileId, setClientProfileId] = useState<string | null>(null);
-  const [clientProfiles, setClientProfiles] = useState<{ id: string; company_name: string | null }[]>([]);
 
   const form = useForm<JobFormData>({
     resolver: zodResolver(jobSchema),
@@ -65,7 +86,14 @@ export default function JobForm() {
       role: "",
       description: "",
       location_type: "remote",
+      location_detail: "",
+      reports_to: "",
+      application_deadline: "",
+      qualifications: "",
+      how_to_apply: "",
+      application_email_subject: "",
       contact_email: "",
+      company_name: "",
     },
   });
 
@@ -78,20 +106,11 @@ export default function JobForm() {
   }, [user, authLoading]);
 
   const initializeForm = async () => {
+    let clientProfileIdForQuery: string | null = null;
+
     if (isAdmin) {
-      // Admin: fetch all client profiles to pick from
-      const { data: profiles } = await supabase
-        .from("client_profiles")
-        .select("id, company_name")
-        .order("company_name");
-
-      setClientProfiles(profiles || []);
-
-      if (profiles && profiles.length > 0) {
-        setClientProfileId(profiles[0].id);
-      }
+      setClientProfileId(null);
     } else {
-      // Client: get their own profile
       const { data: profile } = await supabase
         .from("client_profiles")
         .select("id")
@@ -108,19 +127,18 @@ export default function JobForm() {
         return;
       }
 
+      clientProfileIdForQuery = profile.id;
       setClientProfileId(profile.id);
     }
 
-    // If editing, fetch job data
     if (isEditing) {
       const query = supabase
         .from("jobs")
-        .select("*")
+        .select("*, client_profiles(company_name)")
         .eq("id", jobId);
-      
-      // Clients can only edit their own jobs; admins can edit any
-      if (!isAdmin) {
-        query.eq("client_id", clientProfileId!);
+
+      if (!isAdmin && clientProfileIdForQuery) {
+        query.eq("client_id", clientProfileIdForQuery);
       }
 
       const { data: job, error } = await query.single();
@@ -131,16 +149,29 @@ export default function JobForm() {
           description: "The job you're trying to edit doesn't exist.",
           variant: "destructive",
         });
-        navigate("/client/jobs");
+        navigate(isAdmin ? "/admin/dashboard" : "/client/jobs");
         return;
       }
+
+      const profileRow = job.client_profiles as { company_name: string | null } | null;
 
       form.reset({
         title: job.title,
         role: job.role,
         description: job.description,
         location_type: job.location_type as JobLocationType,
+        location_detail: job.location_detail ?? "",
+        reports_to: job.reports_to ?? "",
+        application_deadline: job.application_deadline
+          ? String(job.application_deadline).slice(0, 10)
+          : "",
+        qualifications: job.qualifications ?? "",
+        how_to_apply: job.how_to_apply ?? "",
+        application_email_subject: job.application_email_subject ?? "",
         contact_email: job.contact_email,
+        company_name: isAdmin
+          ? (job.posted_company_name?.trim() || profileRow?.company_name?.trim() || "")
+          : "",
       });
     } else {
       // Pre-fill email with user's email
@@ -159,18 +190,86 @@ export default function JobForm() {
   };
 
   const onSubmit = async (data: JobFormData) => {
-    if (!clientProfileId) return;
     setSaving(true);
 
-    const jobData = {
-      client_id: clientProfileId,
-      title: data.title,
-      role: data.role,
-      description: data.description,
-      location_type: data.location_type,
-      contact_email: data.contact_email,
-      is_active: true,
+    const t = (s: string | undefined) => {
+      const v = (s ?? "").trim();
+      return v.length ? v : null;
     };
+
+    const extraFields = {
+      location_detail: t(data.location_detail),
+      reports_to: t(data.reports_to),
+      application_deadline: data.application_deadline?.trim() || null,
+      qualifications: t(data.qualifications),
+      how_to_apply: t(data.how_to_apply),
+      application_email_subject: t(data.application_email_subject),
+    };
+
+    let jobData: {
+      client_id: string | null;
+      posted_company_name: string | null;
+      title: string;
+      role: string;
+      description: string;
+      location_type: JobFormData["location_type"];
+      contact_email: string;
+      is_active: boolean;
+      location_detail: string | null;
+      reports_to: string | null;
+      application_deadline: string | null;
+      qualifications: string | null;
+      how_to_apply: string | null;
+      application_email_subject: string | null;
+    };
+
+    if (isAdmin) {
+      const companyTrim = (data.company_name ?? "").trim();
+      if (!companyTrim) {
+        setSaving(false);
+        toast({
+          title: "Company required",
+          description: "Enter the company name for this job.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: match } = await supabase
+        .from("client_profiles")
+        .select("id")
+        .ilike("company_name", escapeIlikeExact(companyTrim))
+        .limit(1)
+        .maybeSingle();
+
+      jobData = {
+        client_id: match?.id ?? null,
+        posted_company_name: match?.id ? null : companyTrim,
+        title: data.title,
+        role: data.role,
+        description: data.description,
+        location_type: data.location_type,
+        contact_email: data.contact_email,
+        is_active: true,
+        ...extraFields,
+      };
+    } else {
+      if (!clientProfileId) {
+        setSaving(false);
+        return;
+      }
+      jobData = {
+        client_id: clientProfileId,
+        posted_company_name: null,
+        title: data.title,
+        role: data.role,
+        description: data.description,
+        location_type: data.location_type,
+        contact_email: data.contact_email,
+        is_active: true,
+        ...extraFields,
+      };
+    }
 
     let error;
 
@@ -245,23 +344,24 @@ export default function JobForm() {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Admin: Company selector */}
-                {isAdmin && clientProfiles.length > 0 && (
-                  <div className="space-y-2">
-                    <FormLabel>Company *</FormLabel>
-                    <Select value={clientProfileId || ""} onValueChange={setClientProfileId}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select company" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {clientProfiles.map((cp) => (
-                          <SelectItem key={cp.id} value={cp.id}>
-                            {cp.company_name || "Unnamed Company"}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                {isAdmin && (
+                  <FormField
+                    control={form.control}
+                    name="company_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Acme Design Studio" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Type any name. If it matches an existing client company (same spelling, any
+                          case), the job links to that profile for logo and about.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
                 <FormField
                   control={form.control}
@@ -296,29 +396,11 @@ export default function JobForm() {
 
                 <FormField
                   control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Describe the role, responsibilities, requirements, and what makes this opportunity exciting..."
-                          className="min-h-[200px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="location_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Location Type *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormLabel>Work arrangement *</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select location type" />
@@ -337,6 +419,133 @@ export default function JobForm() {
 
                 <FormField
                   control={form.control}
+                  name="location_detail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location (city / region)</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Abuja (FCT), Sango-Ota Ogun State"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional. Shown next to remote / hybrid / on-site on the job page.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="reports_to"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reports to</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Principal / Executive Director" {...field} />
+                      </FormControl>
+                      <FormDescription>Optional reporting line for the role.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="application_deadline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Application closing date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormDescription>Leave empty if there is no fixed deadline.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>About the role &amp; responsibilities *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Main function, key responsibilities, day-to-day expectations…"
+                          className="min-h-[200px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="qualifications"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Qualifications &amp; requirements</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Education, languages, experience, certifications, core competencies…"
+                          className="min-h-[160px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional section for education, language, experience, and skills.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="how_to_apply"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How to apply</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="e.g., Send CV and cover letter; use a specific subject line; shortlisted candidates only."
+                          className="min-h-[120px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Extra instructions for applicants (contact email is set below).
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="application_email_subject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preferred email subject (optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Defaults to job title if empty" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Used in the apply-by-email link for the correct subject line.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="contact_email"
                   render={({ field }) => (
                     <FormItem>
@@ -345,7 +554,7 @@ export default function JobForm() {
                         <Input type="email" placeholder="hiring@company.com" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Freelancers will send their applications to this email
+                        Applications are sent to this address (apply button uses it).
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

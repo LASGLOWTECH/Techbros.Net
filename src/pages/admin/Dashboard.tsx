@@ -11,6 +11,8 @@ import JobsTable from "@/components/admin/JobsTable";
 import CompaniesTable from "@/components/admin/CompaniesTable";
 import ActivityFeed from "@/components/admin/ActivityFeed";
 import { AdminMonetization } from "@/components/admin/AdminMonetization";
+import AdminEmailExport from "@/components/admin/AdminEmailExport";
+import ContactInquiriesTable from "@/components/admin/ContactInquiriesTable";
 
 interface PlatformMetrics {
   totalUsers: number;
@@ -155,6 +157,8 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
+        <AdminEmailExport />
+
         {/* Management Tabs */}
         <Tabs defaultValue="users" className="space-y-4">
           <TabsList>
@@ -163,6 +167,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="monetization">Monetization</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
           <TabsContent value="users">
             <UsersTable onRefresh={fetchMetrics} />
@@ -178,6 +183,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="activity">
             <ActivityFeed />
+          </TabsContent>
+          <TabsContent value="contact">
+            <ContactInquiriesTable />
           </TabsContent>
         </Tabs>
       </main>

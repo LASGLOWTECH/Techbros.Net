@@ -14,3 +14,7 @@ verify_jwt = false
 
 [functions.unlock-contact]
 verify_jwt = false
+
+# Database webhooks (Bearer ADMIN_NOTIFY_WEBHOOK_SECRET) — not user JWT
+[functions.admin-notify]
+verify_jwt = false

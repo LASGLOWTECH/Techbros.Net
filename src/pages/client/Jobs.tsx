@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader2, Plus, Briefcase, Edit, Trash2, MapPin, Mail } from "lucide-react";
+import { Loader2, Plus, Briefcase, Edit, Trash2, MapPin, Mail, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,13 +25,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import type { Job, JobLocationType } from "@/lib/supabase";
-
-const locationLabels: Record<JobLocationType, string> = {
-  remote: "Remote",
-  hybrid: "Hybrid",
-  onsite: "On-site",
-};
+import { jobLocationLine, type Job } from "@/lib/supabase";
 
 export default function ClientJobs() {
   const { user, loading: authLoading } = useAuth();
@@ -209,8 +203,18 @@ export default function ClientJobs() {
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
-                          {locationLabels[job.location_type as JobLocationType]}
+                          {jobLocationLine(job)}
                         </span>
+                        {job.application_deadline && (
+                          <span className="flex items-center gap-1 text-amber-600/90 dark:text-amber-500/90">
+                            <Calendar className="h-4 w-4" />
+                            Closes{" "}
+                            {new Date(job.application_deadline + "T12:00:00").toLocaleDateString(
+                              "en-US",
+                              { month: "short", day: "numeric", year: "numeric" }
+                            )}
+                          </span>
+                        )}
                         <span className="flex items-center gap-1">
                           <Mail className="h-4 w-4" />
                           {job.contact_email}

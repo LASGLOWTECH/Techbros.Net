@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 const CONTACT_EMAIL =
-  (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim() || "hello@techbros.network";
+  (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim() || "lasglowtech@gmail.com";
 
 const contactSchema = z.object({
   full_name: z.string().max(120).optional().default(""),
@@ -100,7 +100,7 @@ export default function Contact() {
 
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Contact us</h1>
         <p className="text-muted-foreground mb-10">
-          Questions about the platform, partnerships, or support — we’re happy to hear from you.
+          Questions about the platform, partnerships, or support  we’re happy to hear from you.
         </p>
 
         <div className="space-y-8">
@@ -126,7 +126,7 @@ export default function Contact() {
             <div>
               <h2 className="font-semibold text-foreground mb-1">TechBros Network</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Connecting tech freelancers and clients across Africa and beyond — remote-first.
+                Connecting tech freelancers and clients across Africa and beyond,remote-first.
               </p>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function Contact() {
                   id="contact-email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder="lasglowtech@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting}
